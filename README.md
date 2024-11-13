@@ -1,2 +1,2 @@
 # study
-record my process to study github better
+record my process to use github better
