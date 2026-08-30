@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stevens (1995) ECR 等离子体源 — 研究生阅读指南</title>
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    tags: 'ams'
+  }
+};
+</script>
+<script src="https://cdn.bootcdn.net/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
+<style>
+  :root {
+    --bg: #f8f9fc;
+    --card-bg: #ffffff;
+    --text: #1a1a2e;
+    --text-secondary: #5a5a7a;
+    --border: #e2e4ea;
+    --accent: #2563eb;
+    --accent-light: #eff4ff;
+    --orange: #c27803;
+    --orange-light: #fffaf0;
+    --red: #c24130;
+    --red-light: #fef5f4;
+    --green: #2e7d32;
+    --green-light: #f0faf1;
+    --purple: #7c3aed;
+    --purple-light: #faf5ff;
+    --shadow: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+    --radius: 10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    padding: 2rem 1rem;
+  }
+
+  .container { max-width: 1000px; margin: 0 auto; }
+
+  /* ── Header ── */
+  .header {
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #1e293b 100%);
+    color: #fff;
+    padding: 3rem 2.5rem 2rem;
+    border-radius: var(--radius);
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    top: -50%; right: -20%;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(255,255,255,.04) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .header .badge-row { margin-bottom: .8rem; position: relative; z-index: 1; }
+  .header .badge-row span {
+    display: inline-block;
+    background: rgba(255,255,255,.12);
+    padding: .2rem .7rem;
+    border-radius: 20px;
+    font-size: .8rem;
+    margin-right: .4rem;
+    letter-spacing: .03em;
+  }
+  .header h1 { font-size: 2rem; margin: .4rem 0 .8rem; font-weight: 700; position: relative; z-index: 1; }
+  .header .meta { font-size: .9rem; opacity: .75; position: relative; z-index: 1; }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1.6rem 2rem;
+    margin-bottom: 1.5rem;
+  }
+  .card.accent-left { border-left: 4px solid var(--accent); }
+  .card.orange-left { border-left: 4px solid var(--orange); }
+  .card.green-left  { border-left: 4px solid var(--green); }
+  .card.red-left    { border-left: 4px solid var(--red); }
+  .card.purple-left { border-left: 4px solid var(--purple); }
+
+  h2 {
+    font-size: 1.4rem;
+    color: var(--accent);
+    border-bottom: 2px solid var(--border);
+    padding-bottom: .5rem;
+    margin-bottom: 1.2rem;
+  }
+  h3 {
+    font-size: 1.1rem;
+    margin: 1.5rem 0 .6rem;
+    color: #2c2c4a;
+  }
+  h4 { font-size: 1rem; margin: 1rem 0 .5rem; color: #3b3b5c; }
+
+  p { margin-bottom: .8rem; color: var(--text-secondary); }
+
+  /* ── Callouts ── */
+  .callout {
+    border-radius: 8px;
+    padding: .9rem 1.2rem;
+    margin: 1rem 0;
+    font-size: .93rem;
+    border-left: 4px solid;
+  }
+  .callout.info   { background: var(--accent-light);  border-color: var(--accent); }
+  .callout.warn   { background: var(--orange-light);  border-color: var(--orange); }
+  .callout.green  { background: var(--green-light);   border-color: var(--green); }
+  .callout.purple { background: var(--purple-light);  border-color: var(--purple); }
+  .callout.red    { background: var(--red-light);     border-color: var(--red); }
+
+  /* ── Tables ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: .8rem 0;
+    font-size: .9rem;
+  }
+  th {
+    background: #f0f4ff;
+    color: var(--accent);
+    font-weight: 600;
+    padding: .55rem .8rem;
+    text-align: center;
+    border-bottom: 2px solid var(--border);
+  }
+  td {
+    padding: .5rem .8rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-secondary);
+  }
+  td.left { text-align: left; }
+  tr:last-child td { border-bottom: none; }
+  tr.highlight { background: #fffbeb; }
+
+  /* ── Grid ── */
+  .grid-2, .grid-3 {
+    display: grid;
+    gap: 1rem;
+  }
+  .grid-2 { grid-template-columns: 1fr 1fr; }
+  .grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+  @media (max-width: 720px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+
+  .mini-card {
+    padding: 1.1rem 1.2rem;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: #fafbfd;
+  }
+  .mini-card h4 { margin: 0 0 .5rem; font-size: .95rem; }
+  .mini-card p { font-size: .85rem; margin: 0; }
+
+  /* ── Flow ── */
+  .flow-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: .5rem;
+    margin: 1rem 0;
+    justify-content: center;
+  }
+  .flow-node {
+    padding: .5rem 1rem;
+    background: var(--accent-light);
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    font-size: .85rem;
+    font-weight: 600;
+    color: var(--accent);
+    text-align: center;
+  }
+  .flow-arrow {
+    font-size: 1.3rem;
+    color: #aaa;
+    font-weight: 300;
+  }
+
+  /* ── Highlight number ── */
+  .big-num {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1.2;
+  }
+  .big-num .unit { font-size: .9rem; font-weight: 400; color: #888; }
+
+  /* ── Quote ── */
+  .pull-quote {
+    font-size: 1.1rem;
+    font-style: italic;
+    color: #555;
+    padding: 1rem 1.5rem;
+    background: #fafafc;
+    border-radius: 8px;
+    text-align: center;
+    margin: 1rem 0;
+  }
+  .pull-quote strong { color: var(--accent); font-style: normal; }
+
+  footer {
+    text-align: center;
+    font-size: .8rem;
+    color: #bbb;
+    margin-top: 2.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- ═══════════════ HEADER ═══════════════ -->
+<div class="header">
+  <div class="badge-row">
+    <span>综述</span><span>等离子体源</span><span>半导体工艺</span>
+  </div>
+  <h1>Stevens (1995) ECR 等离子体源<br>研究生阅读指南</h1>
+  <div class="meta">
+    James E. Stevens · <em>High Density Plasma Sources</em> (Noyes Publications) · 被引 200+
+  </div>
+</div>
+
+<!-- ═══════════════ 0. 文章概览 ═══════════════ -->
+<div class="card accent-left">
+  <h2>一、这篇文章到底讲了什么</h2>
+  <p>一句话概括：</p>
+  <div class="pull-quote">
+    <strong>2.45 GHz 微波 + 875 G 磁场</strong>
+    → 如何在 ECR 共振层把能量交给电子
+    → 电子如何通过碰撞把中性气体变成等离子体
+    → 如何让这块等离子体<strong>密度高、均匀性好、离子能量可控</strong>
+    → 用来刻蚀/沉积半导体芯片
+  </div>
+
+  <p>从<strong>你的研究方向（ECR 源如何产生等离子体）</strong>出发，这篇文章的骨架可以这样理解：</p>
+
+  <div class="flow-row">
+    <div class="flow-node">能量输入<br>微波 + 磁场</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node">波-粒子<br>共振耦合</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node">电子加热<br>尾部形成</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node">碰撞电离<br>维持等离子体</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node">粒子输运<br>密度分布</div>
+  </div>
+
+  <p style="margin-top:1.2rem;">全文围绕这条主线展开，35 页、159 篇参考文献，分为五大知识板块：</p>
+
+  <table>
+    <tr><th style="width:8%;">章节</th><th style="width:22%;">板块</th><th style="width:35%;">回答的核心问题</th><th>对你的研究有什么用</th></tr>
+    <tr>
+      <td>§2.2</td>
+      <td><strong>设备层</strong></td>
+      <td class="left">磁控管→波导→窗口→线圈→腔体，东西怎么连？</td>
+      <td class="left">知道每个部件干什么、参数怎么选</td>
+    </tr>
+    <tr>
+      <td>§2.3–2.4</td>
+      <td><strong>耦合层</strong></td>
+      <td class="left">微波怎么"塞进"磁化等离子体？RHP/LHP 模式差别？</td>
+      <td class="left">为什么必须用 RHP 模式、窗口磁场设多少</td>
+    </tr>
+    <tr class="highlight">
+      <td>§2.5</td>
+      <td><strong>传输与吸收层</strong></td>
+      <td class="left">哨声波怎么传播？在哪被吸收？密度剖面怎么形成？</td>
+      <td class="left"><strong>⭐ 核心——你的研究方向</strong></td>
+    </tr>
+    <tr class="highlight">
+      <td>§2.6</td>
+      <td><strong>能量分配层</strong></td>
+      <td class="left">功率→密度/温度的转换效率？每对电子-离子花多少能量？</td>
+      <td class="left"><strong>⭐ 能量预算——设计源的出发点</strong></td>
+    </tr>
+    <tr>
+      <td>§2.7–2.9</td>
+      <td><strong>诊断与控制层</strong></td>
+      <td class="left">怎么测量？怎么调磁场？怎么加 RF 偏压？</td>
+      <td class="left">实验技巧——怎么验证你的源好不好</td>
+    </tr>
+  </table>
+</div>
+
+<!-- ═══════════════ 第二层 ═══════════════ -->
+<div class="card orange-left">
+  <h2>二、从"等离子体产生"角度——必须吃透的五个物理直觉</h2>
+  <p>这篇文章最强的不是数学推导，而是<strong>物理直觉</strong>。以下五条，是理解 ECR 等离子体产生的关键：</p>
+
+  <div class="grid-2" style="margin-top:1rem;">
+    <!-- 直觉 1 -->
+    <div class="mini-card" style="border-left: 4px solid var(--red);">
+      <h4>① 吸收不发生在 $B=875\ \text{G}$</h4>
+      <p>
+        吸收发生在 <strong>$B \approx 810\text{–}940\ \text{G}$</strong>（多普勒展宽）。
+        电子在运动 → 看到的微波频率被多普勒频移 → 共振条件变为
+        $\omega - \omega_{ce} - k_{\parallel}v_{\parallel} \approx 0$。
+        <br><strong>→ 这就是为什么窗口磁场必须 $> B_{\text{res}}$</strong>：
+        波要在到达吸收层之前先传播一段距离。
+      </p>
+    </div>
+
+    <!-- 直觉 2 -->
+    <div class="mini-card" style="border-left: 4px solid var(--accent);">
+      <h4>② 是<em>冲向窗口</em>的电子在吸收功率</h4>
+      <p>
+        哨声波存在于 $\omega - \omega_{ce} < 0$ 区域 → 要求 $v_{\parallel} < 0$（向窗口运动）。
+        电子每穿过一次 ECR 层获得 $\Delta W_\perp \approx 40 \pm 35\ \text{eV}$（Eq.33）。
+        <br><strong>→ 尾部电子是电离的主力</strong>：
+        $E \approx 50\text{–}80\ \text{eV}$ 正好在 Ar 电离截面峰值附近。
+      </p>
+    </div>
+
+    <!-- 直觉 3 -->
+    <div class="mini-card" style="border-left: 4px solid var(--green);">
+      <h4>③ 射线向低密度区折射</h4>
+      <p>
+        ECR 源中 $\omega_{ce}/\omega \lesssim 2$ → $v_{g\perp}$ 指向低密度方向（Eq.24）。
+        <br><strong>→ 负反馈：功率自动避开高密度区</strong>。
+        这就是为什么升高窗口磁场能改善均匀性——微波走更远，折射有更多机会"铺开"功率。
+      </p>
+    </div>
+
+    <!-- 直觉 4 -->
+    <div class="mini-card" style="border-left: 4px solid var(--purple);">
+      <h4>④ $T_e$ 不由功率决定</h4>
+      <p>
+        粒子平衡中 $n_e$ 消掉了（Eq.26→28）→ $T_e$ 由 $p \times L$ 决定。
+        功率影响的是 $n_e$，不是 $T_e$。（除非功率大到电离了大部分中性气体）
+        <br><strong>→ 这是等离子体物理的基本规律</strong>，
+        不限于 ECR，适用于大多数低气压放电。
+      </p>
+    </div>
+
+    <!-- 直觉 5 -->
+    <div class="mini-card" style="border-left: 4px solid var(--orange);">
+      <h4>⑤ 每对电子-离子 ≈ 60 eV（Ar）</h4>
+      <p>
+        能量预算（Eq.32）：电离 16 eV + 激发 ~12 eV + 鞘层损失 ~30 eV + 弹性 ~1 eV。
+        分子气体更贵（解离能）→ $n_e$ 约低 2 倍。
+        <br><strong>→ 设计源时第一个估算</strong>：1000 W → 能维持多少等离子体密度？
+        这是零维模型的核心输出。
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ 三、等离子体产生机制 ═══════════════ -->
+<div class="card green-left">
+  <h2>三、ECR 等离子体产生的完整链条（你研究的核心）</h2>
+
+  <h3>3.1 能量如何从微波交给电子？</h3>
+
+  <div class="callout info">
+    <strong>机制：无碰撞回旋阻尼（collisionless cyclotron damping）</strong><br>
+    不是碰撞吸收！电子在磁场中回旋，RHP 波的电场也同方向旋转。
+    当 $f \approx f_{ce}$（考虑多普勒频移后），电子看到的是<strong>恒定的加速电场</strong>——就像推秋千，每次都在同一相位加力。
+  </div>
+
+  <p>关键量的数量级（Eq.33）：</p>
+  <div class="grid-3">
+    <div class="mini-card" style="text-align:center;">
+      <div style="font-size:.8rem; color:#888;">微波电场</div>
+      <div style="font-size:1.4rem; font-weight:700; color:var(--accent);">$E_\perp \approx 1900$ V/m</div>
+      <div style="font-size:.75rem; color:#aaa;">1000 W, 15 cm 直径源</div>
+    </div>
+    <div class="mini-card" style="text-align:center;">
+      <div style="font-size:.8rem; color:#888;">电子在波场中的相干时间</div>
+      <div style="font-size:1.4rem; font-weight:700; color:var(--accent);">$\tau_{\text{res}} \sim 10^{-9}$ s</div>
+      <div style="font-size:.75rem; color:#aaa;">由 $\nabla B$ 和 $v_{\parallel}$ 决定</div>
+    </div>
+    <div class="mini-card" style="text-align:center;">
+      <div style="font-size:.8rem; color:#888;">单次穿越能量增益</div>
+      <div style="font-size:1.4rem; font-weight:700; color:var(--red);">$\Delta W_\perp \approx 40$ eV</div>
+      <div style="font-size:.75rem; color:#aaa;">正好在电离截面峰值附近</div>
+    </div>
+  </div>
+
+  <h3>3.2 尾部电子如何维持等离子体？</h3>
+  <p>
+    被 ECR 加热的电子形成<strong>高能尾部</strong>（$n_t / n_e \approx 1\%$，Eq.34），
+    能量 $\gtrsim 50\ \text{eV}$。这些"热电子"是电离的主力：
+  </p>
+
+  <div class="callout purple">
+    <strong>电离效率提升 ~16%：</strong>
+    纯 Maxwellian 分布 → 只有高能尾巴上的电子能电离（Ar 电离阈值 15.76 eV）。
+    ECR 的尾部增强了这部分 → 用更少的能量维持同样的电离率。
+    这个效应在<strong>低气压、高功率密度</strong>时更显著。
+  </div>
+
+  <h3>3.3 从微波功率到等离子体密度的能量预算</h3>
+  <p>跟着 1000 W 微波功率走一遍：</p>
+
+  <table>
+    <tr><th>步骤</th><th>发生了什么</th><th>能量去向</th></tr>
+    <tr>
+      <td>1</td>
+      <td class="left">微波进入窗口 → 以哨声波模式在等离子体中传播</td>
+      <td class="left">反射 ~5%（匹配好时）</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td class="left">波到达 ECR 吸收层 → 多普勒展宽共振 → 电子被加速</td>
+      <td class="left">~1000 W 被电子吸收</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td class="left">高能电子（~50 eV）碰撞中性 Ar → 电离（Ar → Ar⁺ + e⁻）</td>
+      <td class="left">16 eV / 对（电离）+ 12 eV / 对（激发发光）</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td class="left">电子和离子流向壁面 → 电子翻越鞘层势垒 $V_p$</td>
+      <td class="left">~30 eV / 对（鞘层损失）</td>
+    </tr>
+    <tr style="background:#f0f4ff;">
+      <td><strong>∑</strong></td>
+      <td class="left" colspan="2">
+        <strong>~60 eV / 电子-离子对</strong> →
+        $n_e \approx \frac{1000\ \text{W}}{60\ \text{eV} \times V \times c_s \times e} \approx 10^{12}\ \text{cm}^{-3}$
+      </td>
+    </tr>
+  </table>
+
+  <h3>3.4 为什么密度剖面有时峰化、有时平坦？</h3>
+  <p>这是 §2.5 的核心结论，也是你理解 ECR 等离子体产生的关键：</p>
+
+  <div class="grid-2">
+    <div class="mini-card" style="border-left: 4px solid var(--red);">
+      <h4>峰化模式</h4>
+      <p>
+        窗口 $B \approx 940\ \text{G}$（接近共振）→ 波在窗口附近就被吸收 →
+        功率沉积"记住"了 TE₁₁ 模式的中心峰值分布 →
+        密度剖面呈尖峰状。
+      </p>
+    </div>
+    <div class="mini-card" style="border-left: 4px solid var(--green);">
+      <h4>平坦模式</h4>
+      <p>
+        窗口 $B \approx 1010\ \text{G} \gg B_{\text{res}}$ → 波传播多个波长后才吸收 →
+        射线折射使其避开高密度区（负反馈）→
+        功率沉积自然铺开 → 密度剖面平坦。
+      </p>
+    </div>
+  </div>
+
+  <div class="callout warn" style="margin-top:1rem;">
+    <strong>⚡ 这不只是稳态——是动态的！</strong><br>
+    模型预测（且实验观察到）密度剖面在 $\sim 100\ \mu\text{s}$ 时间尺度上持续涨落。
+    射线从不收敛——总是不断避开高密度区。这就是 ECR 源"闪烁"模式的物理根源（§4.1）。
+  </div>
+</div>
+
+<!-- ═══════════════ 四、方法论 ═══════════════ -->
+<div class="card purple-left">
+  <h2>四、这篇文章教你的研究方法</h2>
+  <p>除了物理内容本身，这篇文章展示的研究范式值得刻意学习：</p>
+
+  <div class="grid-3">
+    <div class="mini-card" style="text-align:center;">
+      <div style="font-size:2rem;">📐</div>
+      <h4>先估算，再模拟</h4>
+      <p style="font-size:.85rem;">
+        面对新现象先花 10 分钟用简单公式估算量级（如 Eq.33→$\Delta W_\perp \approx 40$ eV）。
+        确认物理上说得通，再决定要不要跑数值模拟。
+      </p>
+    </div>
+    <div class="mini-card" style="text-align:center;">
+      <div style="font-size:2rem;">🪜</div>
+      <h4>分层建模</h4>
+      <p style="font-size:.85rem;">
+        零维（趋势）→ 射线追踪（空间）→ 混合模拟（精确）。
+        不要一上来就追求"全物理"——每层模型回答不同层次的问题。
+      </p>
+    </div>
+    <div class="mini-card" style="text-align:center;">
+      <div style="font-size:2rem;">🔬</div>
+      <h4>理论-实验互相校准</h4>
+      <p style="font-size:.85rem;">
+        图 13：计算和实验并排放，定性一致但不完美匹配。
+        差异不是失败——是发现新物理的机会。
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ 五、你的方向 ═══════════════ -->
+<div class="card red-left">
+  <h2>五、聚焦"等离子体产生"——这篇文章留下哪些开放问题？</h2>
+  <p>以下问题在文中被明确提出但<strong>尚未完全解决</strong>（§4），可能成为你研究的切入点：</p>
+
+  <table>
+    <tr><th style="width:5%;">#</th><th>开放问题</th><th style="width:18%;">相关章节</th><th>研究思路</th></tr>
+    <tr>
+      <td>1</td>
+      <td class="left"><strong>密度涨落（100 μs）和"闪烁模式"是同一个机制吗？</strong></td>
+      <td>§2.5, §4.1</td>
+      <td class="left">用高速照相 + 微波干涉同步测量，验证射线追踪模型的涨落预测</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td class="left"><strong>模式跳变（峰化↔平坦↔振荡）的精确触发条件？</strong></td>
+      <td>§4.1</td>
+      <td class="left">系统扫描 $B_W$、$p$、$P_\mu$，绘制"模式相图"</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td class="left"><strong>中性气体耗尽对等离子体产生的反馈有多大？</strong></td>
+      <td>§2.6, §2.7</td>
+      <td class="left">结合中性气体输运模拟 + LIF 温度测量，量化"等离子体泵浦"效应</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td class="left"><strong>尾部电子分布函数到底长什么样？</strong></td>
+      <td>§2.7</td>
+      <td class="left">用 Langmuir 探针 + 减速场能量分析器测量 eedf 的高能尾部</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td class="left"><strong>为什么没有成熟的 ECR 数值模拟软件？</strong></td>
+      <td>§4.3</td>
+      <td class="left">时间尺度跨越 15 个数量级——需要混合算法（流体 + PIC/MC）</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td class="left"><strong>多极桶为什么能显著改善均匀性？物理机制是什么？</strong></td>
+      <td>§2.9</td>
+      <td class="left">研究磁桶对径向扩散系数的影响，比较有/无桶时的 $D_\perp$</td>
+    </tr>
+  </table>
+</div>
+
+<!-- ═══════════════ 六、怎么读 ═══════════════ -->
+<div class="card accent-left">
+  <h2>六、建议的阅读路径（按你的目标优化）</h2>
+
+  <table>
+    <tr><th style="width:8%;">遍数</th><th style="width:15%;">侧重点</th><th>精读章节</th><th style="width:30%;">目标</th></tr>
+    <tr>
+      <td><strong>第 1 遍</strong></td>
+      <td>物理图像</td>
+      <td>§2.1 → §2.3 → §2.5（Eq.23–24）→ §2.6（"单价"概念）</td>
+      <td class="left">能用自己的话解释：微波功率怎么变成等离子体的</td>
+    </tr>
+    <tr>
+      <td><strong>第 2 遍</strong></td>
+      <td>推导与估算</td>
+      <td>§2.4（Eq.3–16）→ §2.5（Eq.17–25）→ §2.6（Eq.26–32）</td>
+      <td class="left">能复现关键的数量级估算（$\Delta W_\perp$、$n_t/n_e$、能量单价）</td>
+    </tr>
+    <tr>
+      <td><strong>第 3 遍</strong></td>
+      <td>实验验证</td>
+      <td>§2.5（图11,13）→ §2.7（图16–21）→ §2.9（图24–25）</td>
+      <td class="left">能判断：哪些结论是"铁定的"，哪些还只是"看起来像"</td>
+    </tr>
+    <tr>
+      <td><strong>第 4 遍</strong></td>
+      <td>研究选题</td>
+      <td>§4.1（模式跳变）→ §4.3（模拟现状）</td>
+      <td class="left">从开放问题中找到一个可以作为自己课题的切入点</td>
+    </tr>
+  </table>
+</div>
+
+<!-- ═══════════════ 七、一句话 ═══════════════ -->
+<div class="card">
+  <div class="pull-quote" style="font-size:1.2rem; background: linear-gradient(135deg, #f0f4ff, #faf5ff);">
+    <strong>这篇文章教你三件事：</strong><br><br>
+    ① <strong>物理直觉</strong> —— 吸收在哪发生、射线往哪弯、造一对电子-离子花多少能量<br>
+    ② <strong>研究方法</strong> —— 先估算再模拟、先零维再多维、差异就是新发现<br>
+    ③ <strong>写作范式</strong> —— 每节有 so what、从具体到抽象再回来、诚实面对未解决的问题
+  </div>
+</div>
+
+<footer>
+  来源：Stevens, J. E. (1995). <em>Electron Cyclotron Resonance Plasma Sources</em>. In <em>High Density Plasma Sources</em> (O. A. Popov, ed.), Noyes Publications.
+</footer>
+
+</div>
+</body>
+</html>

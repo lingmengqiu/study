@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECR 源中的粒子与能量平衡 — §2.6</title>
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    tags: 'ams'
+  }
+};
+</script>
+<script src="https://cdn.bootcdn.net/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
+<style>
+  :root {
+    --bg: #f8f9fc;
+    --card-bg: #ffffff;
+    --text: #1a1a2e;
+    --text-secondary: #5a5a7a;
+    --border: #e2e4ea;
+    --accent: #2563eb;
+    --accent-light: #eff4ff;
+    --orange: #c27803;
+    --orange-light: #fffaf0;
+    --red: #c24130;
+    --red-light: #fef5f4;
+    --green: #2e7d32;
+    --green-light: #f0faf1;
+    --purple: #7c3aed;
+    --purple-light: #faf5ff;
+    --shadow: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+    --radius: 10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    padding: 2rem 1rem;
+  }
+
+  .container { max-width: 960px; margin: 0 auto; }
+
+  /* ── Header ── */
+  .header {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    color: #fff;
+    padding: 2.5rem 2.5rem 2rem;
+    border-radius: var(--radius);
+    margin-bottom: 2rem;
+  }
+  .header .section-num { font-size: .95rem; letter-spacing: .06em; opacity: .7; }
+  .header h1 { font-size: 1.8rem; margin: .3rem 0 .6rem; font-weight: 700; }
+  .header .subtitle { font-size: .95rem; opacity: .8; }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1.6rem 2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  h2 {
+    font-size: 1.35rem;
+    color: var(--accent);
+    border-bottom: 2px solid var(--border);
+    padding-bottom: .5rem;
+    margin-bottom: 1rem;
+  }
+
+  h3 {
+    font-size: 1.1rem;
+    margin: 1.5rem 0 .6rem;
+    color: #3b3b5c;
+  }
+
+  p { margin-bottom: .8rem; color: var(--text-secondary); }
+
+  /* ── Equations ── */
+  .equation-box {
+    background: var(--accent-light);
+    border-left: 4px solid var(--accent);
+    padding: .8rem 1.2rem;
+    margin: 1rem 0;
+    border-radius: 0 8px 8px 0;
+    overflow-x: auto;
+  }
+  .equation-box .eq-label {
+    font-size: .8rem;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: .3rem;
+  }
+
+  /* ── Callouts ── */
+  .callout {
+    border-radius: 8px;
+    padding: .9rem 1.2rem;
+    margin: 1rem 0;
+    font-size: .93rem;
+    border-left: 4px solid;
+  }
+  .callout.info   { background: var(--accent-light);  border-color: var(--accent); }
+  .callout.warn   { background: var(--orange-light);  border-color: var(--orange); }
+  .callout.danger { background: var(--red-light);     border-color: var(--red); }
+  .callout.green  { background: var(--green-light);   border-color: var(--green); }
+  .callout.purple { background: var(--purple-light);  border-color: var(--purple); }
+
+  /* ── Figure ── */
+  .figure {
+    background: #fafafc;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.2rem 1.5rem;
+    margin: 1.2rem 0;
+  }
+  .figure img {
+    max-width: 100%;
+    border-radius: 6px;
+    display: block;
+    margin: 0 auto;
+  }
+  .figure .fig-caption {
+    text-align: center;
+    font-size: .85rem;
+    color: #777;
+    margin-top: .6rem;
+    font-weight: 500;
+  }
+
+  /* ── Tables ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: .8rem 0;
+    font-size: .88rem;
+  }
+  th {
+    background: var(--accent-light);
+    color: var(--accent);
+    font-weight: 600;
+    padding: .5rem .7rem;
+    text-align: center;
+    border-bottom: 2px solid var(--border);
+  }
+  td {
+    padding: .45rem .7rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+  tr:last-child td { border-bottom: none; }
+  td.left { text-align: left; }
+
+  /* ── Badges ── */
+  .badge {
+    display: inline-block;
+    font-size: .75rem;
+    font-weight: 600;
+    padding: .15rem .6rem;
+    border-radius: 20px;
+    margin-right: .3rem;
+  }
+  .badge.blue  { background: #eef2ff; color: #4f46e5; }
+  .badge.amber { background: #fef3c7; color: #92400e; }
+  .badge.green { background: #dcfce7; color: #166534; }
+  .badge.red   { background: #fee2e2; color: #991b1b; }
+
+  /* ── Analogy card ── */
+  .analogy {
+    background: linear-gradient(135deg, #fef9e7 0%, #fefce8 100%);
+    border: 1px solid #f0d78c;
+    border-radius: var(--radius);
+    padding: 1.4rem 1.8rem;
+    margin: 1.2rem 0;
+  }
+  .analogy h4 { color: #92400e; margin-bottom: .6rem; }
+
+  /* ── Two column ── */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.2rem;
+  }
+  @media (max-width: 640px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  .flow-step {
+    display: flex;
+    align-items: center;
+    gap: .8rem;
+    padding: .8rem 1rem;
+    background: #f9fafc;
+    border-radius: 8px;
+    margin: .5rem 0;
+  }
+  .flow-step .step-num {
+    width: 36px; height: 36px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 50%;
+    font-weight: 700;
+    font-size: .9rem;
+    flex-shrink: 0;
+  }
+  .flow-step .step-text { color: var(--text-secondary); font-size: .9rem; }
+
+  .big-arrow {
+    text-align: center;
+    font-size: 1.5rem;
+    color: var(--accent);
+    margin: .3rem 0;
+  }
+
+  footer {
+    text-align: center;
+    font-size: .8rem;
+    color: #bbb;
+    margin-top: 2.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- ═══════════════ HEADER ═══════════════ -->
+<div class="header">
+  <div class="section-num">§ 2.6</div>
+  <h1>粒子与能量平衡 —— ECR 源的全局模型</h1>
+  <div class="subtitle">Particle and Energy Balance in ECR Plasma Sources &nbsp;·&nbsp; Global (0-D) Model</div>
+</div>
+
+<!-- ═══════════════ 定位 ═══════════════ -->
+<div class="card">
+  <h2>📍 本节在整个框架中的位置</h2>
+  <div class="grid-2">
+    <div style="padding:1rem; background:#f0f4ff; border-radius:8px;">
+      <strong>§2.5 管"在哪里"</strong>
+      <p style="margin:.3rem 0 0; font-size:.9rem;">射线追踪 · 波折射 · 功率沉积空间分布 · 密度剖面（峰化/平坦）</p>
+    </div>
+    <div style="padding:1rem; background:#fff7ed; border-radius:8px;">
+      <strong>§2.6 管"有多少"</strong>
+      <p style="margin:.3rem 0 0; font-size:.9rem;">零维全局模型 · 功率进 → 密度出 · $T_e$ 和 $n_e$ 的平均值由什么决定</p>
+    </div>
+  </div>
+  <p style="margin-top:1rem;">
+    抹平所有空间变化，问一个基本问题：<strong>给定功率、气压、气体种类、腔体大小，等离子体的平均 $T_e$ 和 $n_e$ 是多少？</strong>
+  </p>
+</div>
+
+<!-- ═══════════════ 第一关：T_e ═══════════════ -->
+<div class="card">
+  <h2>第一关 · 电子温度 $T_e$ 由什么决定？</h2>
+
+  <h3>粒子平衡方程</h3>
+  <p>电子数的变化 = 产生 − 消失：</p>
+
+  <div class="equation-box">
+    <div class="eq-label">Eq. (26) · 电子连续性方程</div>
+    $$\underbrace{\cancel{\frac{dn_e}{dt}}}_{=\;0\ \text{(稳态)}}
+      = \underbrace{n_e n_n \langle\sigma v_e\rangle_i}_{\text{电离产生}}
+      - \underbrace{n_e n_i \langle\sigma v_e\rangle_r}_{\text{复合消失（可忽略）}}
+      - \underbrace{\frac{n_e}{\tau_e}}_{\text{流到壁上消失}}$$
+  </div>
+
+  <p>忽略复合（低压下极少），稳态时：</p>
+
+  $$n_e n_n \langle\sigma v_e\rangle_i = \frac{n_e}{\tau_e}$$
+
+  <div class="callout warn">
+    <strong>🔑 关键：两边 $n_e$ 消掉了！</strong><br>
+    $$n_n \langle\sigma v_e\rangle_i = \frac{1}{\tau_e}$$
+    <strong>$T_e$ 不直接取决于功率</strong>——它由气压和约束时间的平衡决定。
+  </div>
+
+  <!-- 板凳模型 -->
+  <div class="analogy">
+    <h4>🪑 "板凳模型"——想象你是一个电子</h4>
+    <table>
+      <tr><th style="width:30%;">你面临的处境</th><th>物理过程</th><th style="width:35%;">数学表达</th></tr>
+      <tr>
+        <td><strong>你活不了多久</strong></td>
+        <td>沿磁场以声速流向壁面，跑掉</td>
+        <td>$\tau_e \approx L / c_s$</td>
+      </tr>
+      <tr>
+        <td><strong>你要撞多少次才能电离一个原子</strong></td>
+        <td>电子-中性原子碰撞电离</td>
+        <td>$1/(n_n\langle\sigma v_e\rangle_i)$</td>
+      </tr>
+      <tr style="background:#fffdf0;">
+        <td colspan="3" style="text-align:center; font-weight:600;">
+          稳态 = 存活时间内刚好产生一个后代来替代自己
+        </td>
+      </tr>
+      <tr>
+        <td><strong>如果撞不够就死了</strong></td>
+        <td>$n_e$ 下降 → 剩余电子加速</td>
+        <td>$T_e \uparrow$</td>
+      </tr>
+      <tr>
+        <td><strong>如果撞太多 → 电子过剩</strong></td>
+        <td>等离子体自我调节</td>
+        <td>$T_e \uparrow$ → 损失加快</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- Eq 27 28 -->
+  <h3>代入具体量</h3>
+  <div class="equation-box">
+    <div class="eq-label">Eq. (27) · 中性密度与气压的关系</div>
+    $$n_n = p\ (\text{mtorr}) \times 3.5 \times 10^{13}\ \mathrm{cm}^{-3}$$
+  </div>
+
+  <div class="equation-box">
+    <div class="eq-label">Eq. (28) · 求解 $T_e$ 的隐式方程</div>
+    $$p \approx \frac{c_s}{L \cdot \langle\sigma v_e\rangle_i \cdot 3.5 \times 10^{13}}$$
+  </div>
+  <p>其中 $c_s = \sqrt{eT_e / M_i}$（离子声速），$\langle\sigma v_e\rangle_i$ 随 $T_e$ 指数增长 → $T_e$ 由这个方程隐式决定。</p>
+
+</div>
+
+<!-- ═══════════════ 图14a ═══════════════ -->
+<div class="card">
+  <h2>图 14a · $T_e$ vs 气压</h2>
+
+  <div class="figure">
+    <img src="Stevens - 1995 - Electron cyclotron resonance plasma sources/hybrid_auto/images/eedb3936596ce24eedae9fd8624cb7bb6bba16a06f3556f5f7f557527ee7051b.jpg"
+         alt="图14 全局模型预测" loading="lazy">
+    <div class="fig-caption">图 14 · 氩 ECR 等离子体全局模型预测<sup>[27][58]</sup></div>
+  </div>
+
+  <div class="callout info">
+    <strong>📊 图14a 的主要信息：</strong><br>
+    · 两条曲线对应 $L = 20\ \text{cm}$ 和 $L = 40\ \text{cm}$（源长度）<br>
+    · <strong>1–10 mtorr 区间 $T_e$ 基本平坦</strong>（$\langle\sigma v_e\rangle_i$ 的指数增长抵消了 $p$ 的变化）<br>
+    · <strong>亚 mtorr 时 $T_e$ 急剧上升</strong>：$p \downarrow$ → $n_n \downarrow$ → 电离概率不足 → 需要更高 $T_e$ 提高每次碰撞的电离率
+  </div>
+
+  <div class="callout green">
+    <strong>💡 直观理解：</strong><br>
+    气压降到极低 → 中性原子太少 → 电子想撞都找不到目标 → 只能"更用力"（更高 $T_e$）→
+    每次碰撞的电离概率飙升 → 用"质量"弥补"数量"
+  </div>
+</div>
+
+<!-- ═══════════════ 第二关：n_e ═══════════════ -->
+<div class="card">
+  <h2>第二关 · 电子密度 $n_e$ 由什么决定？</h2>
+
+  <h3>能量平衡方程</h3>
+
+  <div class="equation-box">
+    <div class="eq-label">Eq. (29) · 能量平衡</div>
+    $$\underbrace{\cancel{\frac{d}{dt}\!\left(\frac{3}{2}n_e e T_e\right)}}_{=\;0\ \text{(稳态)}}
+      = \underbrace{\frac{P_\mu}{V}}_{\text{微波功率密度}}
+      - \underbrace{n_e n_n e \Bigl(E_i\langle\sigma v_e\rangle_i
+        + E_x\langle\sigma v_e\rangle_x
+        + 3T_e\frac{m_e}{M_i}\langle\sigma v_e\rangle_{el}\Bigr)}_{\text{体积能量损失}}
+      - \underbrace{\frac{(3/2)n_e e T_e}{\tau_E}}_{\text{输运损失}}$$
+  </div>
+
+  <p>翻译成人话：<strong>微波注入的功率 = 维持等离子体消耗的功率</strong>。</p>
+</div>
+
+<!-- ═══════════════ 账单模型 ═══════════════ -->
+<div class="card">
+  <h2>💰 "每造一对电子-离子对，花多少能量？"</h2>
+  <p>这是全局模型<strong>最核心的概念</strong>。每电离一个 Ar 原子，微波能量要支付以下账单：</p>
+
+  <table>
+    <tr>
+      <th style="width:5%;">#</th>
+      <th style="width:28%;">账单项目</th>
+      <th style="width:10%;">符号</th>
+      <th style="width:12%;">典型值 (Ar)</th>
+      <th>物理含义</th>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td class="left"><span class="badge red">必须付</span> <strong>电离能</strong></td>
+      <td>$E_i$</td>
+      <td><strong>16 eV</strong></td>
+      <td class="left">把 Ar 最外层电子打飞——这是"正事"</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td class="left"><span class="badge amber">浪费</span> <strong>激发能</strong></td>
+      <td>$E_x \frac{\langle\sigma v_e\rangle_x}{\langle\sigma v_e\rangle_i}$</td>
+      <td><strong>~12 eV</strong></td>
+      <td class="left">电子把 Ar 激发到高能级（发光）但不电离——等离子体发光的来源，但能量没用在电离上</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td class="left"><span class="badge blue">逃逸</span> <strong>电子流出鞘层</strong></td>
+      <td>$V_p + 2T_e$</td>
+      <td><strong>~30 eV</strong></td>
+      <td class="left">电子要翻过鞘层势垒 $V_p$ 才能碰到壁，并带走 $2T_e$ 动能</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td class="left"><span class="badge green">小额</span> <strong>弹性碰撞</strong></td>
+      <td>$3T_e \frac{m_e}{M_i} \frac{\langle\sigma v_e\rangle_{el}}{\langle\sigma v_e\rangle_i}$</td>
+      <td><strong>~1 eV</strong></td>
+      <td class="left">电子撞 Ar 传递动能——质量差太大（1:73000），效率极低，低压下可忽略</td>
+    </tr>
+    <tr style="background:#f0f4ff; font-weight:700;">
+      <td colspan="3">合计 "单价"（每个电子-离子对）</td>
+      <td><strong>~60 eV</strong></td>
+      <td class="left">这就是维持氩等离子体的"能量价格"</td>
+    </tr>
+  </table>
+
+  <div class="callout purple" style="margin-top:1rem;">
+    <strong>🔬 注意：</strong> 对于分子气体（SF₆、CF₄ 等），还有额外的账单——分子解离能、转动能、振动能。
+    所以分子气体的"单价"更高 → 同等功率下 $n_e$ 更低（通常差 ~2 倍）。
+  </div>
+</div>
+
+<!-- ═══════════════ 等离子体电位 ═══════════════ -->
+<div class="card">
+  <h2>⚡ 离子的"助推器"——等离子体电位 $V_p$</h2>
+
+  <p>
+    电子轻 → 跑得快 → 先到壁上 → <strong>壁带负电</strong> → 等离子体带正电 → 形成电势差 $V_p$。
+  </p>
+
+  <div class="equation-box">
+    <div class="eq-label">Eq. (30) · 等离子体电位</div>
+    $$V_p \approx V_f + \frac{T_e}{2}\,\ln\!\left(\frac{M_i}{2.3\,m_e}\right)$$
+  </div>
+
+  <p>对 Ar（$M_i/m_e \approx 73000$），$V_f = 0$（接地球形壁面）：</p>
+
+  $$V_p \approx \frac{T_e}{2} \times 10.4 \approx 5.2\,T_e \approx 31\ \text{V}\quad (T_e = 6\ \text{eV})$$
+
+  <div class="grid-2" style="margin-top:1rem;">
+    <div style="padding:1rem; background:#fef2f2; border-radius:8px; border-left:4px solid var(--red);">
+      <strong>🛑 拦住电子</strong>
+      <p style="margin:0; font-size:.9rem;">只有能量 $>V_p$ 的电子能逃逸<br>→ 电子损失能量 = $V_p + 2T_e$</p>
+    </div>
+    <div style="padding:1rem; background:#f0fdf4; border-radius:8px; border-left:4px solid var(--green);">
+      <strong>🚀 加速离子</strong>
+      <p style="margin:0; font-size:.9rem;">离子被 $V_p$ 加速撞向壁面<br>→ 离子获得 $V_p$ eV 的动能</p>
+    </div>
+  </div>
+
+  <div class="equation-box" style="margin-top:1rem;">
+    <div class="eq-label">Eq. (31) · 电子能量约束时间</div>
+    $$(3/2\,T_e) / \tau_E \approx (V_p + 2T_e) / \tau_e$$
+  </div>
+</div>
+
+<!-- ═══════════════ n_e 最终公式 ═══════════════ -->
+<div class="card">
+  <h2>📐 电子密度的最终公式</h2>
+
+  <div class="equation-box">
+    <div class="eq-label">Eq. (32) · $n_e$ 解析表达式</div>
+    $$n_e = \frac{P_\mu \cdot L}
+      {V \cdot c_s \cdot e \cdot
+        \bigl[\,V_p + 2T_e + E_i + E_x\frac{\langle\sigma v_e\rangle_x}{\langle\sigma v_e\rangle_i}
+        + 3T_e\frac{m_e}{M_i}\frac{\langle\sigma v_e\rangle_{el}}{\langle\sigma v_e\rangle_i}\,\bigr]}$$
+  </div>
+
+  <h3>逐个因子的物理含义</h3>
+
+  <table>
+    <tr><th>因子</th><th>位置</th><th>含义</th><th>告诉你的规律</th></tr>
+    <tr>
+      <td>$P_\mu$</td>
+      <td><span class="badge green">分子</span></td>
+      <td class="left">微波功率</td>
+      <td class="left"><strong>功率 ↑ → $n_e$ ↑</strong>，近似线性（只要中性气体不耗尽）</td>
+    </tr>
+    <tr>
+      <td>$1/V$</td>
+      <td><span class="badge green">分子</span></td>
+      <td class="left">体积的倒数</td>
+      <td class="left"><strong>源越小 → $n_e$ 越高</strong>，功率密度更重要</td>
+    </tr>
+    <tr>
+      <td>$L$</td>
+      <td><span class="badge green">分子</span></td>
+      <td class="left">源长度</td>
+      <td class="left">源越长 → 约束越好 → $n_e$ 越高（但也要和 $V$ 一起看）</td>
+    </tr>
+    <tr>
+      <td>$1/c_s$</td>
+      <td><span class="badge red">分母</span></td>
+      <td class="left">离子声速的倒数</td>
+      <td class="left"><strong>离子越重 → $n_e$ 越高</strong>（Ar > He），因为流出更慢</td>
+    </tr>
+    <tr>
+      <td>$1/[\cdots]$</td>
+      <td><span class="badge red">分母</span></td>
+      <td class="left">"单价"的倒数</td>
+      <td class="left"><strong>分子气体 → 损耗多 → $n_e$ 更低</strong>（SF₆ < Ar）</td>
+    </tr>
+  </table>
+
+  <div class="callout warn">
+    <strong>典型工况估算（Ar，$P_\mu L / V \approx 5\ \text{W/cm}^2$，15 cm 直径源 + 1000 W）：</strong><br>
+    $$n_e = \frac{1000\ \text{W} \times 20\ \text{cm}}{177\ \text{cm}^2 \times 20\ \text{cm} \times 2.5\times 10^5\ \text{cm/s} \times 1.6\times 10^{-19}\ \text{C} \times 60\ \text{V}}
+      \approx 1.2 \times 10^{12}\ \text{cm}^{-3}$$
+  </div>
+</div>
+
+<!-- ═══════════════ 图14 全景 ═══════════════ -->
+<div class="card">
+  <h2>图 14 · 全局模型四联图全景解读</h2>
+
+  <div class="figure">
+    <img src="Stevens - 1995 - Electron cyclotron resonance plasma sources/hybrid_auto/images/eedb3936596ce24eedae9fd8624cb7bb6bba16a06f3556f5f7f557527ee7051b.jpg"
+         alt="图14 全局模型" loading="lazy">
+    <div class="fig-caption">图 14 · (a) $p$ vs $T_e$ &nbsp;|&nbsp; (b) $n_e$ vs $T_e$ &nbsp;|&nbsp; (c) 能量/离子 vs $T_e$ &nbsp;|&nbsp; (d) $n_e$ vs $p$</div>
+  </div>
+
+  <div class="grid-2" style="margin-top:1rem;">
+    <div style="padding:1rem; background:#f0f4ff; border-radius:8px;">
+      <h4 style="margin-top:0;">(a) 气压 vs $T_e$</h4>
+      <p style="font-size:.9rem; margin:0;">
+        两条线 = 两个源长度 $L$<br>
+        $T_e$ 对压力 <strong>不敏感</strong>（mtorr 区间）<br>
+        亚 mtorr → $T_e$ 飙升<br>
+        有复合/附着 → 等效 $L$ 缩短 → 曲线上移
+      </p>
+    </div>
+    <div style="padding:1rem; background:#fff7ed; border-radius:8px;">
+      <h4 style="margin-top:0;">(b) 密度 vs $T_e$</h4>
+      <p style="font-size:.9rem; margin:0;">
+        三条线 = 三个功率水平<br>
+        $n_e \propto P_\mu$（功率越大密度越高）<br>
+        $T_e$ 升高 → 单价上升 → $n_e$ 略降
+      </p>
+    </div>
+    <div style="padding:1rem; background:#f0fdf4; border-radius:8px;">
+      <h4 style="margin-top:0;">(c) 能量/离子 vs $T_e$</h4>
+      <p style="font-size:.9rem; margin:0;">
+        分解各项损耗占比<br>
+        $T_e \uparrow$ → 离子获得更多份额<br>
+        工艺上希望最大化离子能量占比<br>
+        但 $T_e \gg 8\ \text{eV}$ → $V_p$ 过高 → 壁溅射
+      </p>
+    </div>
+    <div style="padding:1rem; background:#faf5ff; border-radius:8px;">
+      <h4 style="margin-top:0;">(d) 密度 vs 气压</h4>
+      <p style="font-size:.9rem; margin:0;">
+        <strong>峰值结构：</strong><br>
+        · 高压端 ↓：弹性碰撞损耗 ↑<br>
+        · 低压端 ↓：单价 ↑（$T_e$ 飙升）<br>
+        · 峰值比实际宽 → 模型未含复合 & 等离子体泵浦
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ 峰值详解 ═══════════════ -->
+<div class="card">
+  <h2>🔍 图14d 的密度峰值为何出现？</h2>
+
+  <table>
+    <tr><th>压力区间</th><th>发生了什么</th><th>$n_e$ 趋势</th></tr>
+    <tr>
+      <td><strong>低压端</strong><br>($\ll 1$ mtorr)</td>
+      <td class="left">
+        $n_n$ 太低 → 电离不够 → 必须 $T_e \uparrow$ 来补偿<br>
+        → "单价"飙升 → 同功率下只能维持更少的电子-离子对<br>
+        → 加上"等离子体泵浦"（大量中性被电离，$n_n$ 进一步降低）
+      </td>
+      <td><span style="color:var(--red); font-weight:700;">↓ 下降</span></td>
+    </tr>
+    <tr style="background:#f0fdf4;">
+      <td><strong>中压区</strong><br>(~1–5 mtorr)</td>
+      <td class="left">
+        电离效率最高、单价适中 → <strong>最佳工作点</strong>
+      </td>
+      <td><span style="color:var(--green); font-weight:700;">● 峰值</span></td>
+    </tr>
+    <tr>
+      <td><strong>高压端</strong><br>($\gg 10$ mtorr)</td>
+      <td class="left">
+        $n_n$ 太高 → 弹性碰撞损耗急剧增加<br>
+        → 加上复合（$n_e n_i \langle\sigma v_e\rangle_r$，模型没算但实际存在）<br>
+        → ECR 条件 $\omega_{ce} \gg \nu_c$ 逐渐失效
+      </td>
+      <td><span style="color:var(--red); font-weight:700;">↓ 下降</span></td>
+    </tr>
+  </table>
+
+  <div class="callout info">
+    <strong>实际 vs 模型：</strong> 实验观察到的密度峰值比模型预测的更窄。
+    因为全局模型缺失了：① 复合（高压端加速下降）；② 等离子体泵浦——电离消耗中性气体（低压端加速下降）；
+    ③ 空间不均匀性——源区密度可能远高于下游。
+  </div>
+</div>
+
+<!-- ═══════════════ 逻辑链路 ═══════════════ -->
+<div class="card">
+  <h2>🔗 完整逻辑链路</h2>
+
+  <div class="flow-step">
+    <div class="step-num">1</div>
+    <div class="step-text"><strong>外部控制参数</strong>：$P_\mu$（功率）、$p$（气压）、气体种类、$L$（源长度）、$V$（体积）</div>
+  </div>
+  <div class="big-arrow">↓</div>
+  <div class="flow-step">
+    <div class="step-num">2</div>
+    <div class="step-text"><strong>粒子平衡 (Eq.26→28)</strong>：$p$ + 气体种类 + $L$ → 隐式决定 $T_e$（<em>与功率无关！</em>）</div>
+  </div>
+  <div class="big-arrow">↓</div>
+  <div class="flow-step">
+    <div class="step-num">3</div>
+    <div class="step-text"><strong>等离子体电位 (Eq.30)</strong>：$T_e$ → $V_p \approx 5T_e$（Ar），决定鞘层行为</div>
+  </div>
+  <div class="big-arrow">↓</div>
+  <div class="flow-step">
+    <div class="step-num">4</div>
+    <div class="step-text"><strong>能量平衡 (Eq.29→32)</strong>：$P_\mu$ + $V$ + $T_e$ + 气体种类 → 算出 $n_e$</div>
+  </div>
+  <div class="big-arrow">↓</div>
+  <div class="flow-step">
+    <div class="step-num">5</div>
+    <div class="step-text"><strong>工艺参数</strong>：$n_e$ → 离子通量 $\Gamma_i$；$V_p$ → 离子能量 → 刻蚀/沉积速率 & 质量</div>
+  </div>
+</div>
+
+<!-- ═══════════════ 局限 ═══════════════ -->
+<div class="card">
+  <h2>⚠️ 全局模型的局限</h2>
+
+  <div class="grid-2">
+    <div style="padding:1rem; background:#f0fdf4; border-radius:8px;">
+      <strong>✅ 能做什么</strong>
+      <ul style="margin:.4rem 0 0 1.2rem; font-size:.9rem; color:var(--text-secondary);">
+        <li>趋势判断：$P_\mu \uparrow$ → $n_e \uparrow$</li>
+        <li>气体选择：Ar vs SF₆ 的密度差异</li>
+        <li>设计参考：源尺寸、功率需求估算</li>
+        <li>工艺窗口：气压范围的初步确定</li>
+      </ul>
+    </div>
+    <div style="padding:1rem; background:#fef2f2; border-radius:8px;">
+      <strong>❌ 不能做什么</strong>
+      <ul style="margin:.4rem 0 0 1.2rem; font-size:.9rem; color:var(--text-secondary);">
+        <li>空间分布（径向均匀性）</li>
+        <li>模式跳变（峰化 ↔ 平坦）</li>
+        <li>时间演化（闪烁、振荡）</li>
+        <li>定位微波沉积位置</li>
+        <li>非热电子尾部效应</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout purple" style="margin-top:1rem;">
+    <strong>📌 合起来才是完整图像：</strong><br>
+    <strong>§2.5（射线追踪）</strong> → 回答"功率沉积在哪、密度分布长什么样"<br>
+    <strong>§2.6（全局模型）</strong> → 回答"给定总功率和气压，平均密度和温度是多少"<br>
+    两者结合 → <strong>二维/三维混合模型</strong>（§4.3 讨论）——全局模型的能量逻辑 + 射线追踪的空间分辨能力
+  </div>
+</div>
+
+<footer>
+  内容来源：Stevens, J. E. (1995). <em>Electron Cyclotron Resonance Plasma Sources</em>.
+  §2.6 Particle and Energy Balance in ECR Plasma Sources.
+</footer>
+
+</div>
+</body>
+</html>
