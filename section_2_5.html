@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECR 源中的波传播与功率吸收 — §2.5</title>
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    tags: 'ams'
+  }
+};
+</script>
+<script src="https://cdn.bootcdn.net/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
+<style>
+  :root {
+    --bg: #f8f9fc;
+    --card-bg: #ffffff;
+    --text: #1a1a2e;
+    --text-secondary: #5a5a7a;
+    --border: #e2e4ea;
+    --accent: #2563eb;
+    --accent-light: #eff4ff;
+    --gold: #b8860b;
+    --gold-light: #fffbeb;
+    --red: #c24130;
+    --red-light: #fef5f4;
+    --green: #2e7d32;
+    --green-light: #f0faf1;
+    --shadow: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+    --radius: 10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.75;
+    padding: 2rem 1rem;
+  }
+
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  /* ── Header ── */
+  .header {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    color: #fff;
+    padding: 2.5rem 2.5rem 2rem;
+    border-radius: var(--radius);
+    margin-bottom: 2rem;
+  }
+  .header .section-num { font-size: .95rem; letter-spacing: .06em; opacity: .7; }
+  .header h1 { font-size: 1.8rem; margin: .3rem 0 .6rem; font-weight: 700; }
+  .header .subtitle { font-size: .95rem; opacity: .8; }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1.6rem 2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  h2 {
+    font-size: 1.35rem;
+    color: var(--accent);
+    border-bottom: 2px solid var(--border);
+    padding-bottom: .5rem;
+    margin-bottom: 1rem;
+  }
+
+  h3 {
+    font-size: 1.1rem;
+    margin: 1.3rem 0 .6rem;
+    color: #3b3b5c;
+  }
+
+  p { margin-bottom: .8rem; color: var(--text-secondary); }
+
+  /* ── Equations ── */
+  .equation-box {
+    background: var(--accent-light);
+    border-left: 4px solid var(--accent);
+    padding: .8rem 1.2rem;
+    margin: 1rem 0;
+    border-radius: 0 8px 8px 0;
+    overflow-x: auto;
+  }
+  .equation-box .eq-label {
+    font-size: .8rem;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: .3rem;
+  }
+
+  /* ── Warnings / callouts ── */
+  .callout {
+    border-radius: 8px;
+    padding: .9rem 1.2rem;
+    margin: 1rem 0;
+    font-size: .93rem;
+    border-left: 4px solid;
+  }
+  .callout.info  { background: var(--accent-light); border-color: var(--accent); }
+  .callout.warn  { background: var(--gold-light);  border-color: var(--gold); }
+  .callout.danger{ background: var(--red-light);   border-color: var(--red); }
+  .callout.green { background: var(--green-light); border-color: var(--green); }
+
+  /* ── Figure block ── */
+  .figure {
+    background: #fafafc;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.2rem 1.5rem;
+    margin: 1.2rem 0;
+  }
+  .figure img {
+    max-width: 100%;
+    border-radius: 6px;
+    display: block;
+    margin: 0 auto;
+  }
+  .figure .fig-caption {
+    text-align: center;
+    font-size: .85rem;
+    color: #777;
+    margin-top: .6rem;
+    font-weight: 500;
+  }
+
+  /* ── Tables ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: .8rem 0;
+    font-size: .88rem;
+  }
+  th {
+    background: var(--accent-light);
+    color: var(--accent);
+    font-weight: 600;
+    padding: .5rem .7rem;
+    text-align: center;
+    border-bottom: 2px solid var(--border);
+  }
+  td {
+    padding: .4rem .7rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+  tr:last-child td { border-bottom: none; }
+
+  /* ── Key-point badge ── */
+  .badge {
+    display: inline-block;
+    font-size: .78rem;
+    font-weight: 600;
+    padding: .15rem .6rem;
+    border-radius: 20px;
+    margin-right: .3rem;
+  }
+  .badge.phys { background: #eef2ff; color: #4f46e5; }
+  .badge.math { background: #fef3c7; color: #92400e; }
+
+  /* ── Summary grid ── */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  @media (max-width: 640px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  .summary-box {
+    text-align: center;
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+  .summary-box .label { font-size: .8rem; color: #888; }
+  .summary-box .value { font-size: 1.3rem; font-weight: 700; }
+  .summary-box .unit  { font-size: .8rem; color: #aaa; }
+
+  footer {
+    text-align: center;
+    font-size: .8rem;
+    color: #bbb;
+    margin-top: 2.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- ═══════════════ HEADER ═══════════════ -->
+<div class="header">
+  <div class="section-num">§ 2.5</div>
+  <h1>ECR 源中的波传播与功率吸收</h1>
+  <div class="subtitle">Wave Propagation and Power Absorption in ECR Sources</div>
+</div>
+
+<!-- ═══════════════ 2.5.0 核心问题 ═══════════════ -->
+<div class="card">
+  <h2>🔬 核心物理问题</h2>
+  <p>
+    ECR 源中，2.45 GHz 微波从介质窗口进入等离子体后，必须传播到
+    <strong>$B = B_{\text{res}} \approx 875\ \mathrm{G}$</strong> 的 ECR 共振层才能被电子吸收。
+    然而——等离子体密度和磁场在 $\hat{r}$ 和 $\hat{z}$ 方向均不均匀，波在传播中会发生
+    <strong>折射</strong>，这直接影响微波功率沉积的空间分布，进而决定
+    <strong>等离子体密度的均匀性</strong>，最终影响刻蚀/沉积工艺的均匀性。
+  </p>
+
+  <div class="callout info">
+    <strong>关键认识：</strong> 微波功率流动会响应等离子体的密度剖面；反过来，
+    密度剖面又决定于微波功率沉积——这是一个 <strong>自洽的非线性耦合</strong>。
+  </div>
+
+  <div class="figure">
+    <div class="fig-caption" style="color:var(--text); font-size:.95rem; margin-bottom:.6rem;">
+      图 11 · 两个不同窗口磁场下的 2.45 GHz 波干涉图<sup>[50]</sup>
+    </div>
+    <img src="Stevens - 1995 - Electron cyclotron resonance plasma sources/hybrid_auto/images/95598f45fa0208649ce9cecb59e44028a6f512a818384daa8c493551632f2b89.jpg"
+         alt="图11 波干涉图" loading="lazy">
+    <div class="fig-caption">
+      <strong>左 (a)：</strong> $B_{\text{win}} \approx 940\ \mathrm{G}$ —— 波在窗口附近迅速衰减，多普勒展宽 ECR 条件已满足<br>
+      <strong>中 (b)：</strong> $B_{\text{win}} \approx 1010\ \mathrm{G}$ —— 波在高场区传播一段距离后才阻尼<br>
+      <strong>右 (c)：</strong> 两者对应的轴向磁场分布
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ 2.5.1 射线追踪 ═══════════════ -->
+<div class="card">
+  <h2>1. 射线追踪方法（WKB / Ray Tracing）</h2>
+
+  <p>
+    由于等离子体波长 $\lambda \approx 1\text{–}2\ \text{cm}$ 远小于密度梯度标长，可用
+    <strong>WKB（Wentzel–Kramers–Brillouin）近似</strong>。射线方程：
+  </p>
+
+  <div class="equation-box">
+    <div class="eq-label">Eq. (17) · 群速度（功率流轨迹）</div>
+    $$\frac{d\bar{r}}{dt} = \frac{-\partial D / \partial \bar{k}}{\partial D / \partial \omega} = v_g$$
+  </div>
+
+  <div class="equation-box">
+    <div class="eq-label">Eq. (18) · 波矢演化</div>
+    $$\frac{d\bar{k}}{dt} = \frac{-\partial D / \partial \bar{r}}{\partial D / \partial \omega}$$
+  </div>
+
+  <p>
+    其中 $D = n^2 - R = 0$ 是从 Eq. (1) 引入的 RHP 哨声波色散方程，
+    $\bar{r}$、$\bar{k}$ 分别是射线的 <strong>位置</strong>和<strong>波矢</strong>。
+    射线起点的初始功率 $P_0$ 由耦合器模式的局部 Poynting 通量（图 10）决定。
+  </p>
+</div>
+
+<!-- ═══════════════ 2.5.2 吸收机制 ═══════════════ -->
+<div class="card">
+  <h2>2. 功率吸收机制</h2>
+
+  <h3>2.1 沿射线路径的吸收</h3>
+  <div class="equation-box">
+    <div class="eq-label">Eq. (19)</div>
+    $$P_{abs}(z) = P_0 \left[ 1 - \exp\!\left( -\int 2\,k_{\parallel i}\ dz \right) \right]$$
+  </div>
+
+  <h3>2.2 无碰撞吸收系数</h3>
+  <p>
+    假设 Maxwellian 电子分布，对色散方程做 Taylor 展开 $D \approx D_r + iD_i + i\bar{k}_i\,\partial D/\partial k$
+    （$D_r \approx 0$），得虚部吸收系数：
+  </p>
+
+  <div class="equation-box">
+    <div class="eq-label">Eq. (21)</div>
+    $$k_{\parallel i}
+      \approx \frac{\omega\,\omega_{pe}^2}{2\,c^2\,k_{\parallel}^2\,v_{te}}
+             \sqrt{\pi}\,
+             \exp\!\left\{ -\left[ \frac{\omega - \omega_{ce}}{k_{\parallel}\,v_{te}} \right]^2 \right\}$$
+  </div>
+
+  <p>
+    其中 $v_{te} = (2k_B T_e / m_e)^{1/2}$ —— 电子热速度。<br>
+    <strong>含义：</strong> 吸收在 <em>高温</em> 和 <em>高密度</em> 时更强；
+    高功率/高气压下，波在接近共振场前就更快地被阻尼。
+  </p>
+
+  <h3>2.3 多普勒展宽的 ECR 共振条件</h3>
+  <div class="equation-box">
+    <div class="eq-label">Eq. (23) · 共振条件</div>
+    $$\omega - \omega_{ce} - k_{\parallel}\,v_{\parallel} \approx 0$$
+  </div>
+
+  <div class="callout warn">
+    <strong>⚠️ 关键物理图像（对照图 4）：</strong><br>
+    实际吸收微波功率的是 <strong>向窗口方向运动的高速电子</strong>（$v_{\parallel} < 0$），
+    因为波存在于 $\omega - \omega_{ce} < 0$ 的区域。<br><br>
+    强吸收发生在 $|v_{\parallel}| \lesssim 2v_{te}$ 范围内。
+    对典型的 $n_e \approx 10^{12}\ \mathrm{cm}^{-3}$、$T_e \approx 6\ \mathrm{eV}$，
+    吸收磁场范围约为 <strong>$810 \lesssim B \lesssim 940\ \mathrm{G}$</strong>，
+    并非精确在 $B_{\text{res}} = 875\ \mathrm{G}$，而是 <strong>$\sim 10\%$ 偏高</strong>。
+  </div>
+
+  <div class="callout info">
+    <strong>更精确的处理：</strong> 全热等离子体色散方程（Eq. 22）：<br>
+    $$D \approx n_{\parallel}^2 - 1 - \frac{\omega_{pe}^2}{\omega\,k_{\parallel}\,v_{te}}\,
+       Z\!\left( \frac{\omega - \omega_{ce}}{k_{\parallel}\,v_{te}} \right)$$
+    其中 $Z$ 是等离子体色散函数。Fidone<sup>[51]</sup> 指出 Eq. (1) + Eq. (21) 的阻尼率误差可达 2 倍
+    （在 $|v_{\parallel}| < 2v_{te}$ 区域），但轴向阻尼位置仅偏移 $\lesssim 1\ \mathrm{cm}$。
+  </div>
+</div>
+
+<!-- ═══════════════ 2.5.3 折射 ═══════════════ -->
+<div class="card">
+  <h2>3. 射线的折射行为</h2>
+
+  <h3>3.1 垂直与平行群速度之比</h3>
+  <div class="equation-box">
+    <div class="eq-label">Eq. (24)</div>
+    $$\frac{v_{g\perp}}{v_{g\parallel}}
+      \approx \frac{k_{\perp}}{k_{\parallel}}\,
+             \frac{(\beta - 2)}{\bigl[\,2(\beta - 1) + \beta\,(k_{\perp}/k_{\parallel})^2\,\bigr]}$$
+  </div>
+  <p>
+    其中 $\beta = \dfrac{\omega_{ce}\,k_{\parallel}}{\omega\,k} \approx \dfrac{\omega_{ce}}{\omega}$，
+    ECR 源中 $1 < \beta < 2$。
+  </p>
+
+  <h3>3.2 两条重要推论</h3>
+
+  <div class="grid-2">
+    <div class="summary-box" style="border-color: var(--accent);">
+      <div class="badge phys">推论 ①</div>
+      <div class="label" style="margin-top:.4rem;">初始传播沿磁场线</div>
+      <div class="value" style="font-size:1rem; color:var(--accent);">$v_{g\parallel 0} \gg v_{g\perp 0}$</div>
+      <div class="unit">因为 $k_{\parallel} \gg k_{\perp}$，$\beta > 1.2$</div>
+    </div>
+
+    <div class="summary-box" style="border-color: var(--gold);">
+      <div class="badge phys">推论 ②</div>
+      <div class="label" style="margin-top:.4rem;">射线向低密度区折射</div>
+      <div class="value" style="font-size:1rem; color:#b8860b;">$\omega_{ce}/\omega \lesssim 2$</div>
+      <div class="unit">ECR 源工况 · 有利于均匀性</div>
+    </div>
+  </div>
+
+  <p style="margin-top:1rem;">
+    推论 ① 意味着：如果磁场线从窗口快速发散，微波功率可以被"铺开"到更大的面积——这被
+    某些强发散场源<sup>[46]</sup> 所利用。<br>
+    推论 ② 意味着：功率会自动避开高密度区、弯向低密度区——这是一个
+    <strong>负反馈</strong>，有利于使密度剖面趋于平坦。（注意在 helicon 源中
+    $\omega_{ce}k_{\parallel}/\omega k > 2$，折射方向相反——向高密度区折射。<sup>[47]</sup>）
+  </p>
+</div>
+
+<!-- ═══════════════ 2.5.4 图12 ═══════════════ -->
+<div class="card">
+  <h2>4. 图 12 · 射线轨迹与功率沉积分布</h2>
+
+  <div class="figure">
+    <img src="Stevens - 1995 - Electron cyclotron resonance plasma sources/hybrid_auto/images/04663c1637cec93cc8427dbd26d5500518e9f82011aa351f0c01ac51d46fdfbb.jpg"
+         alt="图12 射线轨迹与功率沉积" loading="lazy">
+    <div class="fig-caption">
+      图 12 · 射线轨迹（曲线）与相对功率沉积等值线（阴影）
+      <br><strong>(a) 中心峰值的抛物形径向密度剖面</strong> &nbsp;|&nbsp;
+      <strong>(b) 空心密度剖面</strong><sup>[50]</sup>
+    </div>
+  </div>
+
+  <p>
+    射线始终被<strong>折射离开高密度区</strong>——中心峰值的剖面 (a) 中射线向外弯，
+    空心剖面 (b) 中射线向内弯。功率沉积（阴影等值线）的形状与密度剖面和折射程度密切相关。
+  </p>
+</div>
+
+<!-- ═══════════════ 2.5.5 自洽模型 ═══════════════ -->
+<div class="card">
+  <h2>5. 自洽波–等离子体相互作用模型</h2>
+
+  <p>
+    上述讨论是单向的——密度剖面影响波。但反过来：波沉积 <strong>产生</strong> 等离体子密度。
+    一个简单的自洽模型如下：
+  </p>
+
+  <div class="equation-box">
+    <div class="eq-label">Eq. (25) · 电子数连续性</div>
+    $$\frac{d n_e(r)}{dt} + \frac{n_e(r)}{\tau_e} = S(r)$$
+  </div>
+
+  <p>
+    其中：
+    <br>· $S(r)$ —— 由局部微波能量沉积决定的电离率，$S(r) \approx (\text{射线功率/体积}) \times (1\ \text{粒子}/60\ \mathrm{eV})$
+    <br>· $\tau_e \approx L / c_s \approx 1.4 \times 10^{-4}\ \mathrm{s}$ —— 平行损失的粒子约束时间
+    <br>· $c_s = (k_B T_e / M_i)^{1/2}$ —— 离子声速（Ar $M_i/M_p = 40$，$T_e \approx 6\ \mathrm{eV}$）
+  </p>
+
+  <p>
+    <strong>求解方法：</strong>交替迭代
+  </p>
+  <ol>
+    <li>用 Eq. (17)–(21) 计算射线轨迹和局部沉积 $S(r)$</li>
+    <li>用 Eq. (25) 更新时间步 $dt \lesssim 0.01\tau_e \approx 10^{-6}\ \mathrm{s}$ 后的密度</li>
+    <li>回到第 1 步，直到统计稳态</li>
+  </ol>
+  <p>
+    波穿越等离子体的时间 $L/v_g \approx 10^{-8}\ \mathrm{s}$，远快于密度变化。
+  </p>
+</div>
+
+<!-- ═══════════════ 2.5.6 图13 ═══════════════ -->
+<div class="card">
+  <h2>6. 图 13 · 实验与模拟对比——峰化 vs 平坦</h2>
+
+  <div class="grid-2">
+    <div class="figure" style="margin:0;">
+      <div class="fig-caption" style="margin-bottom:.4rem;">(a) 实测密度剖面</div>
+      <img src="Stevens - 1995 - Electron cyclotron resonance plasma sources/hybrid_auto/images/d27a656b98b2bf8f48e0ed147b21d33f60c03844e401bd440b20245f5375c28a.jpg"
+           alt="图13a 实测剖面" loading="lazy">
+    </div>
+    <div class="figure" style="margin:0;">
+      <div class="fig-caption" style="margin-bottom:.4rem;">(b) 模型计算剖面</div>
+      <img src="Stevens - 1995 - Electron cyclotron resonance plasma sources/hybrid_auto/images/d27a656b98b2bf8f48e0ed147b21d33f60c03844e401bd440b20245f5375c28a.jpg"
+           alt="图13b 计算剖面" loading="lazy">
+    </div>
+  </div>
+  <div class="fig-caption" style="margin-top:.8rem;">
+    图 13 · 1 mtorr Ar、600 W 条件下，两个窗口磁场下的 (a) 实测与 (b) 计算密度剖面<sup>[50]</sup>
+  </div>
+
+  <div class="callout green" style="margin-top:1rem;">
+    <strong>✓ 定性对比：</strong><br>
+    · <strong>$B_W \approx 940\ \mathrm{G}$（近窗口吸收）→ 尖峰剖面</strong>：
+    微波在传播展开前即被吸收，沉积分布继承 TE₁₁ 模式的中心峰值<br>
+    · <strong>$B_W \approx 1010\ \mathrm{G}$（远距离吸收）→ 相对平坦剖面</strong>：
+    微波传播了多个波长，射线折射使其自动避开高密度区，功率沉积自然扩散
+  </div>
+</div>
+
+<!-- ═══════════════ 2.5.7 微观参数总结 ═══════════════ -->
+<div class="card">
+  <h2>7. 典型微观参数一览</h2>
+  <table>
+    <tr><th>参数</th><th>符号</th><th>典型值</th><th>单位</th><th>说明</th></tr>
+    <tr><td>自由空间波长</td><td>$\lambda_0$</td><td>12.2</td><td>cm</td><td>2.45 GHz</td></tr>
+    <tr><td>等离子体波长</td><td>$\lambda$</td><td>1–2</td><td>cm</td><td>$\lambda_0/n$，$n \approx 5\text{–}10$</td></tr>
+    <tr><td>共振磁场</td><td>$B_{\text{res}}$</td><td>875</td><td>G</td><td>$f_{ce} = 2.8\ \mathrm{GHz/kG}$</td></tr>
+    <tr><td>多普勒展宽吸收范围</td><td>$B_{\text{abs}}$</td><td>810–940</td><td>G</td><td>$|v_\parallel| \lesssim 2v_{te}$</td></tr>
+    <tr><td>电子热速度</td><td>$v_{te}$</td><td>$\sim 1.5 \times 10^8$</td><td>cm/s</td><td>$T_e \approx 6\ \mathrm{eV}$</td></tr>
+    <tr><td>波穿越时间</td><td>$L/v_g$</td><td>$\sim 10^{-8}$</td><td>s</td><td>—</td></tr>
+    <tr><td>粒子约束时间</td><td>$\tau_e$</td><td>$\sim 1.4 \times 10^{-4}$</td><td>s</td><td>$L/c_s$，Ar</td></tr>
+    <tr><td>密度涨落时间尺度</td><td>$t_{\text{fluct}}$</td><td>$\sim 100$</td><td>$\mu$s</td><td>$t \lesssim \tau_e$</td></tr>
+  </table>
+</div>
+
+<!-- ═══════════════ 2.5.8 结论 ═══════════════ -->
+<div class="card">
+  <h2>8. 小结</h2>
+
+  <div class="grid-2">
+    <div class="summary-box" style="border-color: var(--red);">
+      <div class="label">低窗口磁场 $\approx 940\ \mathrm{G}$</div>
+      <div class="value" style="font-size:1rem; color:var(--red);">📌 尖峰</div>
+      <div class="unit">近窗口吸收 · 维持 TE₁₁ 峰值分布</div>
+    </div>
+    <div class="summary-box" style="border-color: var(--green);">
+      <div class="label">高窗口磁场 $\approx 1010\ \mathrm{G}$</div>
+      <div class="value" style="font-size:1rem; color:var(--green);">✅ 平坦</div>
+      <div class="unit">远距离吸收 · 射线折射铺开功率</div>
+    </div>
+  </div>
+
+  <div class="callout warn" style="margin-top:1rem;">
+    <strong>⚡ 深层结论：</strong><br>
+    这个 <strong>自洽的波–等离子体反馈循环</strong> 是 ECR 源出现多种工作模式
+    （峰化 / 平坦 / 振荡 / 闪烁）的根本物理原因。
+    模型预测密度剖面会在 $t \lesssim \tau_e$ 尺度上持续涨落——射线从不收敛、
+    总是不断避开高密度区——这与实验中观察到的 <strong>100 μs 级别密度涨落</strong><sup>[55]</sup>
+    及其与微波功率密度的反相关关系定性一致。
+  </div>
+
+  <div class="callout info">
+    <strong>💡 工艺启示：</strong><br>
+    即使耦合器模式（TE₁₁ / TM₀₁）的 Poynting 通量有明显差异，
+    只要微波传播了足够多的波长（$\gtrsim 5\lambda$），折射效应就能在很大程度上消除初始条件的差异。
+    这就是为什么在"远耦合"ECR 工具中，耦合器模式的均匀性影响较小<sup>[55]</sup>。
+  </div>
+</div>
+
+<footer>
+  内容来源：Stevens, J. E. (1995). <em>Electron Cyclotron Resonance Plasma Sources</em>.
+  §2.5 Wave Propagation and Power Absorption in ECR Sources.
+</footer>
+
+</div>
+
+</body>
+</html>

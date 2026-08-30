@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stevens (1995) §2.4–§2.6 内容总结</title>
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    tags: 'ams'
+  }
+};
+</script>
+<script src="https://cdn.bootcdn.net/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
+<style>
+  :root {
+    --bg: #f8f9fc; --card-bg: #ffffff;
+    --text: #1a1a2e; --text-secondary: #5a5a7a;
+    --border: #e2e4ea; --accent: #2563eb; --accent-light: #eff4ff;
+    --orange: #c27803; --red: #c24130; --green: #2e7d32; --purple: #7c3aed;
+    --shadow: 0 1px 3px rgba(0,0,0,.06); --radius: 10px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.8; padding: 2rem 1rem;
+  }
+  .container { max-width: 1000px; margin: 0 auto; }
+
+  .header {
+    background: linear-gradient(135deg, #0f172a, #1e3a5f);
+    color: #fff; padding: 2.5rem; border-radius: var(--radius); margin-bottom: 2rem;
+  }
+  .header h1 { font-size: 1.8rem; }
+  .header .meta { font-size: .9rem; opacity: .7; margin-top: .3rem; }
+
+  .card {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.6rem 2rem; margin-bottom: 1.5rem;
+  }
+  h2 { font-size: 1.3rem; color: var(--accent); border-bottom: 2px solid var(--border); padding-bottom: .5rem; margin-bottom: 1rem; }
+  h3 { font-size: 1.08rem; margin: 1.3rem 0 .5rem; color: #2c2c4a; }
+  h4 { font-size: .98rem; margin: 1rem 0 .4rem; color: #3b3b5c; }
+
+  p { margin-bottom: .8rem; color: var(--text-secondary); }
+
+  .eq-box {
+    background: var(--accent-light); border-left: 4px solid var(--accent);
+    padding: .7rem 1.2rem; margin: .8rem 0; border-radius: 0 8px 8px 0; overflow-x: auto;
+  }
+  .eq-box .label { font-size: .8rem; color: var(--accent); font-weight: 600; margin-bottom: .2rem; }
+
+  .callout {
+    border-radius: 8px; padding: .8rem 1.2rem; margin: .8rem 0; font-size: .93rem;
+    border-left: 4px solid;
+  }
+  .callout.info  { background: #eff4ff; border-color: var(--accent); }
+  .callout.warn  { background: #fffaf0; border-color: var(--orange); }
+  .callout.green { background: #f0faf1; border-color: var(--green); }
+  .callout.red   { background: #fef5f4; border-color: var(--red); }
+  .callout.purple{ background: #faf5ff; border-color: var(--purple); }
+
+  table { width: 100%; border-collapse: collapse; margin: .8rem 0; font-size: .88rem; }
+  th { background: #f0f4ff; color: var(--accent); font-weight: 600; padding: .5rem .7rem; text-align: center; border-bottom: 2px solid var(--border); }
+  td { padding: .45rem .7rem; text-align: center; border-bottom: 1px solid var(--border); color: var(--text-secondary); }
+  td.l { text-align: left; }
+  tr:last-child td { border-bottom: none; }
+
+  .grid-2, .grid-3 { display: grid; gap: 1rem; }
+  .grid-2 { grid-template-columns: 1fr 1fr; }
+  .grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+  @media (max-width: 720px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+
+  .mini-card {
+    padding: 1rem 1.1rem; border-radius: 8px; border: 1px solid var(--border); background: #fafbfd;
+  }
+  .mini-card h4 { margin: 0 0 .4rem; font-size: .93rem; }
+  .mini-card p { font-size: .84rem; margin: 0; }
+
+  .badge {
+    display: inline-block; font-size: .72rem; font-weight: 600; padding: .1rem .5rem;
+    border-radius: 20px; margin-right: .2rem;
+  }
+  .badge.blue  { background: #eef2ff; color: #4f46e5; }
+  .badge.amber { background: #fef3c7; color: #92400e; }
+  .badge.green { background: #dcfce7; color: #166534; }
+  .badge.red   { background: #fee2e2; color: #991b1b; }
+
+  ol, ul { margin: .5rem 0 .5rem 1.2rem; color: var(--text-secondary); }
+  li { margin-bottom: .3rem; }
+
+  .image-ref {
+    padding: .5rem .8rem; background: #fafafc; border: 1px dashed var(--border);
+    border-radius: 6px; margin: .5rem 0; font-size: .85rem; color: #888;
+  }
+
+  footer { text-align: center; font-size: .8rem; color: #bbb; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="header">
+  <h1>Stevens (1995) · ECR 等离子体源<br>§2.4–§2.6 物理内容总结</h1>
+  <div class="meta">
+    James E. Stevens, <em>Electron Cyclotron Resonance Plasma Sources</em>,
+    in <em>High Density Plasma Sources</em>, Noyes Publications, 1995.
+  </div>
+</div>
+
+<!-- ═══════════════ 概览 ═══════════════ -->
+<div class="card">
+  <h2>三章内容在全文中的定位</h2>
+  <p>
+    ECR 等离子体源的工作原理可以拆分为三个递进的物理问题。§2.4 解决"微波怎么高效进入磁化等离子体"，
+    §2.5 解决"进去之后波怎么传播、在哪被吸收、密度分布如何形成"，
+    §2.6 解决"给定总功率和气压，平均密度和温度是多少"。
+    三章合在一起，构成了从微波功率输入到稳态等离子体输出的完整物理链条。
+  </p>
+  <div class="grid-3">
+    <div class="mini-card" style="border-left:4px solid var(--accent);">
+      <h4>§2.4 微波耦合</h4>
+      <p>阻抗匹配 · RHP/LHP 模式 · 窗口设计 · 传输线模型 · 局部发射近似</p>
+    </div>
+    <div class="mini-card" style="border-left:4px solid var(--green);">
+      <h4>§2.5 波传播与吸收</h4>
+      <p>射线追踪 · 多普勒展宽 · 折射行为 · 自洽密度剖面 · 峰化/平坦模式</p>
+    </div>
+    <div class="mini-card" style="border-left:4px solid var(--orange);">
+      <h4>§2.6 粒子与能量平衡</h4>
+      <p>全局模型 · Tₑ 决定机制 · 能量单价 · Vₚ 等离子体电位 · nₑ 表达式</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ §2.4 ═══════════════ -->
+<div class="card">
+  <h2>§2.4 微波与 ECR 等离子体的耦合</h2>
+
+  <h3>2.4.1 耦合器设计的四个演化阶段</h3>
+  <table>
+    <tr><th>阶段</th><th>方案</th><th>优缺点</th></tr>
+    <tr>
+      <td>第一代</td>
+      <td class="l">矩形波导 $TE_{10}$ 直接怼到圆柱腔端面<sup>[34]</sup></td>
+      <td class="l">简单，但 $TE_{10}$ 电场非轴对称 → 等离子体天生不对称</td>
+    </tr>
+    <tr>
+      <td>第二代</td>
+      <td class="l">矩形→圆形渐变，$TE_{10}$ → $TE_{11}$（圆形基模）</td>
+      <td class="l">Popov<sup>[35]</sup> 发现：即使入射 $TE_{11}$ 非轴对称，<strong>等离子体自身会将入射波分解为传播的 RHP 模式和反射模式</strong></td>
+    </tr>
+    <tr>
+      <td>第三代</td>
+      <td class="l">纯 RHP $TE_{11}$ 耦合器（金属/介质片偏振器<sup>[39]</sup>）</td>
+      <td class="l">与光学的 1/4 波片原理相同——介质片与电场成 45°，两正交分量相位差 90° → 圆偏振</td>
+    </tr>
+    <tr>
+      <td>第四代</td>
+      <td class="l">窗口本身做四分之一波长阻抗变换器<sup>[9][18][40]</sup></td>
+      <td class="l">宽带匹配：$P_r/P_f < 5\%$ 覆盖 $n_e \approx 3\times 10^{11}$ 到 $3\times 10^{12}\ \mathrm{cm}^{-3}$</td>
+    </tr>
+  </table>
+
+  <h3>2.4.2 一维传输线模型</h3>
+  <p>
+    核心假设（被实验证实）：微波电路仅通过等离子体表面与等离子体交互。
+    微波进入等离子体后，在 $< 1\ \mathrm{cm}$ 内被完全吸收，不会反射回来形成驻波。
+    因此整个微波链路可以当作级联传输线处理：
+  </p>
+  <p>
+    源波导（$Z_G$）→ 三销钉调谐器 → 波导 → 介质窗口（$Z_W$，厚度 $\ell$）
+    → 等离子体表面（$Z_p$）→ 在 $d$ 处被吸收。
+  </p>
+
+  <div class="eq-box">
+    <div class="label">Eq. (3) · 传输线方程（窗口外表面负载阻抗）</div>
+    $$Z_L = Z_W\,\frac{Z_p + Z_W \tanh(\beta\ell)}{Z_W + Z_p \tanh(\beta\ell)}$$
+  </div>
+
+  <div class="eq-box">
+    <div class="label">Eq. (4) · 窗口特性阻抗（$TE_{11}$ 模式）</div>
+    $$Z_W = \frac{Z_0}{\sqrt{\varepsilon_r - (f_c / f)^2}}$$
+    <span style="font-size:.82rem;color:#999;">$Z_0 = 377\ \Omega$（自由空间），$\varepsilon_r \approx 3.8$（石英）或 $9.8$（Al₂O₃），$f_c = 0.293\,c/a$</span>
+  </div>
+
+  <div class="eq-box">
+    <div class="label">Eq. (5) · 四分之一波长匹配条件（$\beta\ell = \pi/2$）</div>
+    $$Z_L = Z_W^2 / Z_p$$
+    此时窗口充当阻抗反转器——高 $Z_p$ 变低 $Z_L$，低 $Z_p$ 变高 $Z_L$。选合适的 $Z_W$（窗口材料）使得 $Z_L \approx Z_G$。
+  </div>
+
+  <div class="eq-box">
+    <div class="label">Eq. (6) · 圆波导特性阻抗（空气填充 $TE_{11}$）</div>
+    $$Z_G = \frac{Z_0}{\sqrt{1 - (f_c / f)^2}}$$
+  </div>
+
+  <h3>2.4.3 等离子体表面阻抗 $Z_p$</h3>
+  <p>
+    在窗口附近（$< 1\ \mathrm{cm}$），密度和磁场近似均匀，等离子体波长 $\lambda \approx 1-2\ \mathrm{cm} \ll$ 腔体尺度
+    → 无限大均匀等离子体的平面波近似成立。
+  </p>
+
+  <div class="eq-box">
+    <div class="label">Eq. (7–8) · Maxwell 方程组（频域，$\exp(-i\omega t)$）</div>
+    $$\nabla \times \bar{\mathbf{E}} = i\omega \bar{\mathbf{B}}, \qquad
+      \nabla \times \bar{\mathbf{B}} = -i\omega c^{-2}\,\bar{\bar{\mathbf{K}}}\,\bar{\mathbf{E}}$$
+  </div>
+
+  <div class="eq-box">
+    <div class="label">Eq. (9) · 冷等离子体介电张量（Stix 记号，磁场沿 $\hat{\mathbf{z}}$）</div>
+    $$\bar{\bar{\mathbf{K}}} =
+      \begin{pmatrix} (R+L)/2 & -i(R-L)/2 & 0 \\
+                      i(R-L)/2 & (R+L)/2 & 0 \\
+                      0 & 0 & P \end{pmatrix}$$
+  </div>
+
+  <div class="eq-box">
+    <div class="label">Eq. (10)</div>
+    $$P \approx 1 - f_{pe}^2 / f^2$$
+  </div>
+
+  <p>
+    忽略 $\nabla_\perp \sim k_\perp$（由波导模式决定，$n_\perp < 1$）相对于 $\nabla_\parallel \sim k_\parallel$（由等离子体决定，$n_\parallel \approx 5-10$）。
+    RHP 条件 $\mathbf{E_x} = -i\mathbf{E_y}$ 代入后得：
+  </p>
+
+  <div class="eq-box">
+    <div class="label">Eq. (11) · RHP 波方程</div>
+    $$\partial^2 \mathbf{E_x} / \partial z^2 + R(z)\,k_0^2\,\mathbf{E_x} = 0$$
+  </div>
+
+  <p>在耦合区 $R(z) \approx$ 常数 → 平面波解：</p>
+
+  <div class="eq-box">
+    <div class="label">Eq. (12–13) · 平面波解</div>
+    $$\mathbf{E_x} = E_0 \exp(i k_0 \sqrt{R}\,z), \qquad c\,\mathbf{B_y} = \sqrt{R}\,\mathbf{E_x}$$
+  </div>
+
+  <div class="eq-box">
+    <div class="label">Eq. (14) · 等离子体表面阻抗（核心结果）</div>
+    $$Z_p = Z_0\,\frac{\mathbf{E_x}}{c\,\mathbf{B_y}} = \frac{Z_0}{\sqrt{R}}$$
+  </div>
+
+  <div class="callout green">
+    <strong>关键结论：</strong> 当鞘层厚度 $\ll \lambda$ 时，$Z_p$ <strong>为纯实数（纯电阻）</strong>。
+    这意味着微波功率进入等离子体后一去不复返——在传播路径上被完全吸收，不形成驻波。
+    实验测得的阻抗相位证实了这一预测<sup>[40]</sup>。
+  </div>
+
+  <div class="eq-box">
+    <div class="label">Eq. (15) · 功率反射系数</div>
+    $$\frac{P_r}{P_f} = \left|\frac{Z_L - Z_G}{Z_L + Z_G}\right|^2$$
+  </div>
+
+  <h3>2.4.4 关键实验数据</h3>
+
+  <div class="grid-2">
+    <div class="mini-card">
+      <h4>图 6 · 反射系数 vs 源区密度（$B_W \approx 950\ \mathrm{G}$，Ar，无外部调谐）<sup>[40]</sup></h4>
+      <p>
+        薄石英窗口（$\beta\ell < \pi/2$）：$P_r/P_f$ 随 $n_e$ 单调上升，
+        $n_e \approx 10^{12}$ 处约 65% 被反射。<br>
+        四分之一波长 Al₂O₃ 窗口：$n_e \approx 3\times 10^{11} \sim 3\times 10^{12}$ 全范围 $P_r/P_f < 5\%$。
+      </p>
+    </div>
+    <div class="mini-card">
+      <h4>图 7 · 反射系数 vs 气压和功率</h4>
+      <p>
+        反射最低点随功率变化：低功率时最佳匹配在高压端（功率少→密度低→需高压提供更多中性），
+        高功率时向低压端移动。匹配取决于 $n_e$，$n_e$ 由功率和气压共同决定。
+      </p>
+    </div>
+    <div class="mini-card">
+      <h4>图 8 · RHP $TE_{11}$ vs LHP $TE_{11}$<sup>[40]</sup></h4>
+      <p>
+        RHP：密度随功率平滑线性增加。<br>
+        LHP：低功率时几乎不产生等离子体（$\bar{n}_e \lesssim 1.2\times 10^{11}$），
+        功率 $> 1000\ \mathrm{W}$ 时出现非线性跳变。<br>
+        <strong>原因：</strong> LHP 在 $n_e > n_L \approx 2n_c \approx 1.5\times 10^{11}\ \mathrm{cm}^{-3}$ 时被截止（Eq.2 中 $L < 0$）。
+      </p>
+    </div>
+    <div class="mini-card">
+      <h4>图 9 · 反射系数 vs 窗口磁场（三种等效 $\varepsilon_r$）</h4>
+      <p>
+        $\varepsilon_r$ 越高，反射最低点对应的 $B_W$ 越接近 $B_{\text{res}}$。
+      </p>
+    </div>
+  </div>
+
+  <div class="eq-box">
+    <div class="label">Eq. (16) · 最佳窗口磁场设计公式</div>
+    $$\frac{B_W}{B_{\text{res}}} \approx 1 + \frac{n_e}{n_c}\,(\varepsilon_r^{-2})\,[1 - (f_c/f)^2]$$
+    <span style="font-size:.82rem;color:#999;">高 $\varepsilon_r$ → $B_W/B_{\text{res}}$ 更接近 1 → 可用较低磁场实现匹配。</span>
+  </div>
+
+  <h3>2.4.5 其他耦合模式：$TM_{01}$</h3>
+  <div class="image-ref">图 10 · $TE_{11}$ 与 $TM_{01}$ 模式的径向 Poynting 通量分布<sup>[50]</sup></div>
+  <p>
+    $TE_{11}$ 功率峰值在轴上 → 通常产生中心峰化的密度剖面。
+    $TM_{01}$ 是下一个高阶圆柱模式，完全轴对称，Poynting 通量峰值离轴（环形分布）
+    → 可产生更均匀甚至中空的剖面，但线性偏振时最多耦合 50% 的功率（另一半被反射）。
+  </p>
+  <p>
+    其他特殊设计：Matsuo 的介质楔形片<sup>[43]</sup>、Fukuda 的锥形石英钟罩<sup>[45]</sup>、
+    Nishimura 的凹面窗口<sup>[46]</sup>——核心思路均是让微波更均匀地进入等离子体。
+  </p>
+
+  <h3>2.4.6 局部发射近似（连接 §2.5 的桥梁）</h3>
+  <p>
+    不管耦合器模式在波导中长什么样，一旦微波穿过窗口，
+    因为 $\lambda \approx 1-2\ \mathrm{cm} \ll$ 腔体尺度，<strong>窗口上每一点都可看作向等离子体发射一个局部 RHP 平面波</strong>。
+    射线起点的初始功率 $P_0$ = 耦合器 Poynting 通量（图 10）× 局部发射。
+    有说服力的证据：RHP $TE_{11}$ + 四分之一波长窗口 → 几乎 100% 耦合；
+    线偏振模式 → 最多 50%（线偏振 = RHP + LHP 各 50%，LHP 被反射）。
+  </p>
+
+  <h3>2.4.7 初始击穿</h3>
+  <p>
+    全文对击穿过程的讨论极少（仅一段话）。稳态耦合分析的前提是等离子体已存在。
+    击穿时腔体为空谐振腔 → 驻波模式有节点和腹点。
+    若 $B=875\ \mathrm{G}$ 面落在电场节点上 → 种子电子无法获得能量 → 击穿失败。
+    解决方法：扫描窗口磁场使共振面扫过电场腹点。
+    击穿过程（真空腔模式 + 种子电子统计 + 密度跨越 12 个量级 + LHP→RHP 转换）在本文中未做定量分析。
+  </p>
+</div>
+
+<!-- ═══════════════ §2.5 ═══════════════ -->
+<div class="card">
+  <h2>§2.5 波传播与功率吸收</h2>
+
+  <h3>2.5.1 问题的物理本质</h3>
+  <p>
+    2.45 GHz 微波穿过窗口后，以哨声波（RHP 模式）在磁化等离子体中传播。
+    由于 $n_e(r,z)$ 和 $B(r,z)$ 在空间上不均匀，波会发生折射，直接影响微波功率沉积的空间分布，
+    进而决定等离子体密度的均匀性。反过来，密度剖面又由功率沉积决定——这是一个<strong>自洽的非线性耦合</strong>。
+  </p>
+
+  <h3>2.5.2 射线追踪方法（WKB 近似）</h3>
+  <p>
+    因为等离子体波长 $\lambda \approx 1-2\ \mathrm{cm} \ll$ 密度梯度标长，WKB 近似成立。
+    色散方程 $D = n^2 - R = 0$（Eq.1），射线方程：
+  </p>
+
+  <div class="eq-box">
+    <div class="label">Eq. (17) · 功率流轨迹（群速度）</div>
+    $$\frac{d\bar{r}}{dt} = \frac{-\partial D / \partial \bar{k}}{\partial D / \partial \omega} = v_g$$
+  </div>
+
+  <div class="eq-box">
+    <div class="label">Eq. (18) · 波矢沿射线的演化</div>
+    $$\frac{d\bar{k}}{dt} = \frac{-\partial D / \partial \bar{r}}{\partial D / \partial \omega}$$
+  </div>
+
+  <h3>2.5.3 功率吸收——多普勒展宽的 ECR 共振</h3>
+  <p>沿射线路径的功率吸收：</p>
+
+  <div class="eq-box">
+    <div class="label">Eq. (19)</div>
+    $$P_{abs}(z) = P_0 \left[1 - \exp\!\left(-\int 2\,k_{\parallel i}\,dz\right)\right]$$
+  </div>
+
+  <p>对 Maxwellian 电子分布，对 $D \approx D_r + iD_i + i\bar{k}_i\,\partial D/\partial k$（$D_r \approx 0$）做 Taylor 展开：</p>
+
+  <div class="eq-box">
+    <div class="label">Eq. (21) · 无碰撞吸收系数</div>
+    $$k_{\parallel i} \approx \frac{\omega\,\omega_{pe}^2}{2\,c^2\,k_{\parallel}^2\,v_{te}}\,
+      \sqrt{\pi}\,\exp\!\left\{-\left[\frac{\omega - \omega_{ce}}{k_{\parallel}\,v_{te}}\right]^2\right\}$$
+    <span style="font-size:.82rem;color:#999;">$v_{te} = (2k_B T_e/m_e)^{1/2}$，吸收在高密度和高温时更强。</span>
+  </div>
+
+  <p>对全热等离子体色散方程（Eq.22），吸收发生的条件是：</p>
+
+  <div class="eq-box">
+    <div class="label">Eq. (23) · 多普勒展宽 ECR 共振条件 ⭐</div>
+    $$\omega - \omega_{ce} - k_{\parallel}\,v_{\parallel} \approx 0$$
+  </div>
+
+  <div class="callout warn">
+    <strong>核心物理图像：</strong>
+    吸收<strong>不精确发生在 $B = 875\ \mathrm{G}$（$\omega = \omega_{ce}$）</strong>。
+    波存在于 $\omega - \omega_{ce} < 0$ 区域 → 共振条件要求 $v_{\parallel} < 0$ →
+    <strong>是冲向窗口方向的高速电子在吸收功率</strong>（对照图 4）。
+    强吸收发生在 $|v_{\parallel}| \lesssim 2v_{te}$ → 对 $n_e \approx 10^{12}\ \mathrm{cm}^{-3}$、$T_e \approx 6\ \mathrm{eV}$，
+    实际吸收磁场范围约 $810 \lesssim B \lesssim 940\ \mathrm{G}$，比 $B_{\text{res}}$ 偏高约 10%。
+  </div>
+
+  <div class="callout info">
+    Fidone<sup>[51]</sup> 指出 Eq.(1) + Eq.(21) 的简化阻尼率在 $|v_{\parallel}| < 2v_{te}$ 区域误差可达 2 倍，
+    但对轴向阻尼位置的影响 $\lesssim 1\ \mathrm{cm}$。
+  </div>
+
+  <h3>2.5.4 图 11 · 波干涉图——验证吸收位置的关键实验<sup>[50]</sup></h3>
+  <p>
+    用同轴 RF 探针在 ECR 刻蚀工具的轴上扫描，探针信号与微波前向功率的参考信号外差，
+    输出 $\propto E_0 \sin(\phi)$。
+  </p>
+  <ul>
+    <li><strong>$B_W \approx 940\ \mathrm{G}$：</strong>微波在窗口附近迅速衰减 → 多普勒展宽的 ECR 吸收条件在窗口处即已满足</li>
+    <li><strong>$B_W \approx 1010\ \mathrm{G}$：</strong>微波在高场区（$B \gg B_{\text{res}}$）无衰减传播 → 到达 $B \lesssim 1.1\,B_{\text{res}}$ 时才开始强烈吸收</li>
+  </ul>
+  <p>核心含义：升高窗口磁场可以让微波传播更远再被吸收 → 功率沉积区域扩展。</p>
+
+  <h3>2.5.5 射线的折射行为</h3>
+
+  <div class="eq-box">
+    <div class="label">Eq. (24) · 垂直与平行群速度之比</div>
+    $$\frac{v_{g\perp}}{v_{g\parallel}}
+      \approx \frac{k_{\perp}}{k_{\parallel}}\,
+      \frac{(\beta - 2)}{\bigl[2(\beta - 1) + \beta\,(k_{\perp}/k_{\parallel})^2\bigr]},
+      \qquad \beta = \frac{\omega_{ce}k_{\parallel}}{\omega k} \approx \frac{\omega_{ce}}{\omega}$$
+  </div>
+
+  <div class="grid-2">
+    <div class="mini-card" style="border-left:4px solid var(--accent);">
+      <h4>推论 ① 初始传播沿磁场线</h4>
+      <p>$v_{g\parallel 0} \gg v_{g\perp 0}$：因为 $k_{\parallel} \gg k_{\perp}$（$k_{\parallel}$ 由等离子体色散决定，$k_{\perp}$ 由耦合器模式决定），
+      且典型 $\beta > 1.2$。<br>
+      → 磁场线快速发散的源可利用这一特性将功率铺开<sup>[46]</sup>。</p>
+    </div>
+    <div class="mini-card" style="border-left:4px solid var(--green);">
+      <h4>推论 ② 射线向低密度区折射（$\beta < 2$）</h4>
+      <p>ECR 源中 $\omega_{ce}/\omega \lesssim 2$ → $v_{gx}$ 与密度梯度符号相同
+      → 射线<strong>弯向低密度区</strong>（负反馈）。<br>
+      → 功率自动避开高密度区 → 有利于密度剖面平坦化。<br>
+      注意：在 helicon 源中 $\omega_{ce} k_{\parallel}/\omega k > 2$，折射方向相反（向高密度区）<sup>[47]</sup>。</p>
+    </div>
+  </div>
+
+  <h3>2.5.6 图 12 · 射线轨迹与功率沉积分布<sup>[50]</sup></h3>
+  <p>
+    (a) 中心峰值密度剖面 → 射线向外弯曲进入低密度区；
+    (b) 空心密度剖面 → 射线向内弯曲。
+    无论哪种初始剖面，射线总是<strong>被折射离开高密度区</strong>。
+  </p>
+
+  <h3>2.5.7 自洽波-等离子体相互作用模型</h3>
+
+  <div class="eq-box">
+    <div class="label">Eq. (25) · 电子数连续性方程</div>
+    $$\frac{d n_e(r)}{dt} + \frac{n_e(r)}{\tau_e} = S(r)$$
+    <span style="font-size:.82rem;color:#999;">
+      $S(r) \approx (\text{射线功率/体积}) \times (1\ \text{粒子}/60\ \mathrm{eV})$，
+      $\tau_e \approx L / c_s \approx 1.4 \times 10^{-4}\ \mathrm{s}$（Ar，$T_e \approx 6\ \mathrm{eV}$）。
+    </span>
+  </div>
+
+  <p><strong>迭代求解：</strong> 射线追踪 → 计算局部沉积 $S(r)$ → 更新 $n_e(r)$（时间步 $dt \lesssim 10^{-6}\ \mathrm{s}$）→ 重新追踪。
+  波穿越时间 $L/v_g \approx 10^{-8}\ \mathrm{s} \ll$ 密度变化时间。</p>
+
+  <h3>2.5.8 图 13 · 实验与模型的密度剖面对比（1 mtorr Ar, 600 W）<sup>[50]</sup></h3>
+
+  <div class="grid-2">
+    <div class="mini-card" style="border-left:4px solid var(--red);">
+      <h4>$B_W \approx 940\ \mathrm{G}$ → 尖峰</h4>
+      <p>波在窗口附近即被吸收 → 功率沉积直接继承 $TE_{11}$ 模式的中心峰值分布 → 密度剖面呈尖峰状。
+      模型定性复现了这一行为。</p>
+    </div>
+    <div class="mini-card" style="border-left:4px solid var(--green);">
+      <h4>$B_W \approx 1010\ \mathrm{G}$ → 平坦</h4>
+      <p>波传播多个波长后才吸收 → 射线折射使其避开高密度区 → 功率沉积自然铺开 →
+      密度在源区 2/3 半径内相对平坦（梯度仅约 10–20%）。</p>
+    </div>
+  </div>
+
+  <p>
+    模型预测：射线轨迹<strong>从不收敛</strong>——总是在不断避开高密度区 →
+    密度剖面在 $t \lesssim \tau_e$ 尺度上持续涨落。
+    这与实验中观测到的 100 μs 级密度涨落及其与微波功率密度的反相关关系定性一致<sup>[55]</sup>。
+  </p>
+
+  <div class="callout purple">
+    <strong>工艺启示：</strong> 即使耦合器模式的 Poynting 通量有明显差异，
+    只要微波传播了足够多的波长（$\gtrsim 5\lambda$），折射效应能大幅消除初始条件的差异。
+    $TE_{11}$ 和 $TM_{01}$ 混合实验<sup>[55]</sup> 证实：
+    当微波近窗口吸收时，耦合器模式影响大；远距离吸收时，耦合器模式影响小。
+  </div>
+</div>
+
+<!-- ═══════════════ §2.6 ═══════════════ -->
+<div class="card">
+  <h2>§2.6 粒子与能量平衡 —— 全局（零维）模型</h2>
+
+  <h3>2.6.1 全局模型的出发点</h3>
+  <p>
+    §2.5 讨论空间分布，§2.6 则忽略所有空间变化，问一个更基本的问题：
+    <strong>给定外部控制参数（功率 $P_\mu$、气压 $p$、气体种类、源尺寸 $L$、体积 $V$），
+    等离子体的平均电子温度 $T_e$ 和密度 $n_e$ 是多少？</strong>
+  </p>
+  <p>尽管零维模型无法提供空间分布信息，但它给出了最重要的设计趋势和数量级估算。</p>
+
+  <h3>2.6.2 第一关：$T_e$ 由粒子平衡决定</h3>
+
+  <div class="eq-box">
+    <div class="label">Eq. (26) · 稳态电子连续性方程</div>
+    $$0 = n_e n_n \langle\sigma v_e\rangle_i - n_e/\tau_e$$
+    <span style="font-size:.82rem;color:#999;">忽略复合（低压下极少）。$\tau_e = \tau_i \approx L/c_s$（沿磁场以声速流出）。</span>
+  </div>
+
+  <div class="callout red">
+    <strong>关键——$n_e$ 消掉了！</strong>
+    $$n_n \langle\sigma v_e\rangle_i = 1/\tau_e$$
+    <strong>$T_e$ 不直接取决于微波功率。</strong>
+    它由"存活时间内刚好电离一个原子来替代自己"这个要求决定。
+  </div>
+
+  <div class="eq-box">
+    <div class="label">Eq. (27) · 中性密度与气压的关系</div>
+    $$n_n = p\ (\text{mtorr}) \times 3.5 \times 10^{13}\ \mathrm{cm}^{-3}$$
+  </div>
+
+  <div class="eq-box">
+    <div class="label">Eq. (28) · 隐式决定 $T_e$</div>
+    $$p \approx \frac{c_s}{L \cdot \langle\sigma v_e\rangle_i \cdot 3.5 \times 10^{13}}, \qquad c_s = \sqrt{e T_e / M_i}$$
+  </div>
+
+  <div class="image-ref">图 14a · $T_e$ vs 气压（两条曲线对应 $L = 20$ 和 $40\ \mathrm{cm}$）</div>
+  <ul>
+    <li>1–10 mtorr 区间 $T_e$ 基本平坦（$\langle\sigma v_e\rangle_i$ 的指数增长抵消 $p$ 的线性变化）</li>
+    <li>亚 mtorr → $n_n$ 太少 → 必须提高 $T_e$ 来增加每次碰撞的电离概率 → $T_e$ 急剧飙升</li>
+    <li>有效源长度 $L$ 越短（约束越差）→ 需要更高 $T_e$ 补偿更短的存活时间</li>
+    <li>有复合或电子附着 → 等效 $L$ 缩短 → 曲线上移</li>
+  </ul>
+
+  <h3>2.6.3 第二关：$n_e$ 由能量平衡决定——"单价"概念</h3>
+
+  <div class="eq-box">
+    <div class="label">Eq. (29) · 稳态能量平衡</div>
+    $$\frac{P_\mu}{V} = n_e n_n e \Bigl[E_i\langle\sigma v_e\rangle_i
+      + E_x\langle\sigma v_e\rangle_x
+      + 3T_e\frac{m_e}{M_i}\langle\sigma v_e\rangle_{el}\Bigr]
+      + \frac{(3/2)n_e e T_e}{\tau_E}$$
+    <span style="font-size:.82rem;color:#999;">忽略弹性碰撞项后（低压下极小），整理即得 $n_e$ 表达式。</span>
+  </div>
+
+  <div class="callout warn">
+    <strong>核心概念——每产生一个电子-离子对的"能量单价"（Ar）：</strong>
+  </div>
+
+  <table>
+    <tr><th>能量损耗通道</th><th>符号</th><th>典型值</th><th>说明</th></tr>
+    <tr><td class="l"><span class="badge red">必须付</span> 电离能</td><td>$E_i$</td><td><strong>16 eV</strong></td><td class="l">把 Ar 最外层电子打掉——"正事"</td></tr>
+    <tr><td class="l"><span class="badge amber">浪费</span> 激发能</td><td>$E_x \langle\sigma v_e\rangle_x / \langle\sigma v_e\rangle_i$</td><td><strong>~12 eV</strong></td><td class="l">电子将 Ar 激发到高能级→发光——能量浪费</td></tr>
+    <tr><td class="l"><span class="badge blue">逃逸</span> 电子流出鞘层</td><td>$V_p + 2T_e$</td><td><strong>~30 eV</strong></td><td class="l">电子翻越鞘层势垒 + 带走 $2T_e$ 动能</td></tr>
+    <tr><td class="l"><span class="badge green">小额</span> 弹性碰撞</td><td>$3T_e (m_e/M_i) \langle\sigma v_e\rangle_{el} / \langle\sigma v_e\rangle_i$</td><td><strong>~1 eV</strong></td><td class="l">电子→Ar 动能传递，$m_e/M_i \approx 1/73000 \to$ 效率极低</td></tr>
+    <tr style="background:#f0f4ff; font-weight:700;">
+      <td class="l" colspan="3">合计（Ar）</td><td><strong>~60 eV / 电子-离子对</strong></td>
+    </tr>
+  </table>
+
+  <div class="callout info">
+    <strong>分子气体（SF₆、CF₄ 等）还有额外的"账单"：</strong> 分子解离能、转动能、振动能 →
+    "单价"更高 → 同等功率下 $n_e$ 约低 2 倍。这就是为什么 Ar 等离子体密度通常高于分子气体等离子体<sup>[42][65]</sup>。
+  </div>
+
+  <div class="image-ref">图 14c · 能量/离子 vs $T_e$——各项损耗通道占比随 $T_e$ 变化</div>
+  <p>
+    $T_e$ 越高 → 电离和激发截面增加 → 离子的能量份额增大。
+    但 $T_e \gg 8\ \mathrm{eV}$ 时 $V_p$ 过高 → 壁溅射加剧 → 对工艺不利。
+    RF 偏压衬底可以在不改变 $V_p$ 的情况下增加离子能量。
+  </p>
+
+  <h3>2.6.4 等离子体电位 $V_p$</h3>
+
+  <div class="eq-box">
+    <div class="label">Eq. (30) · 等离子体电位</div>
+    $$V_p \approx V_f + \frac{T_e}{2}\,\ln\!\left(\frac{M_i}{2.3\,m_e}\right)$$
+  </div>
+  <p>对 Ar（$M_i/m_e \approx 73000$），$V_f = 0$（接地壁）→ $V_p \approx 5.2\,T_e \approx 31\ \mathrm{V}$（$T_e = 6\ \mathrm{eV}$）。</p>
+  <p>$V_p$ 的双重作用：① 拦住电子（只有能量 $> V_p$ 的电子能逃逸）；② 加速离子（离子获得 $V_p$ eV 的动能撞向壁面）。</p>
+
+  <div class="eq-box">
+    <div class="label">Eq. (31) · 电子能量约束时间与鞘层损失的关系</div>
+    $$(3/2\,T_e) / \tau_E \approx (V_p + 2T_e) / \tau_e$$
+  </div>
+
+  <h3>2.6.5 $n_e$ 的最终表达式</h3>
+
+  <div class="eq-box">
+    <div class="label">Eq. (32) · 电子密度的完整表达式</div>
+    $$n_e = \frac{P_\mu \cdot L}
+      {V \cdot c_s \cdot e \cdot
+        \bigl[\,V_p + 2T_e + E_i + E_x\frac{\langle\sigma v_e\rangle_x}{\langle\sigma v_e\rangle_i}
+        + 3T_e\frac{m_e}{M_i}\frac{\langle\sigma v_e\rangle_{el}}{\langle\sigma v_e\rangle_i}\,\bigr]}$$
+  </div>
+
+  <table>
+    <tr><th>因子</th><th>含义</th><th>给出的规律</th></tr>
+    <tr><td>$P_\mu$</td><td class="l">微波功率</td><td class="l"><strong>$n_e \propto P_\mu$</strong>（近似线性，只要中性不耗尽）</td></tr>
+    <tr><td>$1/V$</td><td class="l">体积的倒数 → 功率密度</td><td class="l">源越小 → 密度越高</td></tr>
+    <tr><td>$L$</td><td class="l">源长度</td><td class="l">源越长 → 约束越好 → 密度越高</td></tr>
+    <tr><td>$1/c_s$</td><td class="l">离子声速倒数</td><td class="l"><strong>离子越重 → 流出越慢 → 密度越高</strong>（Ar > He）</td></tr>
+    <tr><td>$1/[\cdots]$</td><td class="l">"单价"倒数</td><td class="l">分子气体损耗多 → 单价高 → 密度低（SF₆ < Ar）</td></tr>
+  </table>
+
+  <p><strong>典型估算（Ar，15 cm 直径源，1000 W）：</strong>
+  $n_e \approx 1.2 \times 10^{12}\ \mathrm{cm}^{-3}$。</p>
+
+  <h3>2.6.6 图 14d · $n_e$ vs 气压——峰值结构</h3>
+  <ul>
+    <li><strong>低压端下降：</strong>$n_n$ 太少 → 电离不足 → $T_e$ 飙升 → "单价"上升 → $n_e$ 下降。加上"等离子体泵浦"（大量中性被电离，$n_n$ 进一步降低）加速下降。</li>
+    <li><strong>高压端下降：</strong>$n_n$ 太多 → 弹性碰撞损耗激增 → 能量浪费加剧。加上复合（模型未包含）→ $n_e$ 下降。ECR 条件 $\omega_{ce} \gg \nu_c$ 也逐渐失效。</li>
+    <li>实际实验中的峰值比模型预测更窄——全局模型缺乏复合、等离子体泵浦和空间不均匀性。</li>
+  </ul>
+</div>
+
+<!-- ═══════════════ 公式全集 ═══════════════ -->
+<div class="card">
+  <h2>附录：三章所有公式汇总（共 19 个编号方程）</h2>
+
+  <table>
+    <tr><th>Eq.</th><th>章节</th><th style="width:45%;">公式</th><th>物理内容</th></tr>
+    <tr><td>(1)</td><td>§2.3</td><td class="l">$n^2 = R = 1 + f_{pe}^2/f^2 / [(f_{ce}/f)(k_{\parallel}/k) - 1]$</td><td>RHP 哨声波色散</td></tr>
+    <tr><td>(2)</td><td>§2.3</td><td class="l">$n^2 = L = 1 - f_{pe}^2/f^2 / [(f_{ce}/f)(k_{\parallel}/k) + 1]$</td><td>LHP 波色散</td></tr>
+    <tr><td>(3)</td><td>§2.4</td><td class="l">$Z_L = Z_W [Z_p + Z_W \tanh(\beta\ell)] / [Z_W + Z_p \tanh(\beta\ell)]$</td><td>传输线阻抗变换</td></tr>
+    <tr><td>(4)</td><td>§2.4</td><td class="l">$Z_W = Z_0 / \sqrt{\varepsilon_r - (f_c/f)^2}$</td><td>窗口特性阻抗</td></tr>
+    <tr><td>(5)</td><td>§2.4</td><td class="l">$Z_L = Z_W^2 / Z_p$（$\beta\ell = \pi/2$）</td><td>四分之一波长匹配</td></tr>
+    <tr><td>(6)</td><td>§2.4</td><td class="l">$Z_G = Z_0 / \sqrt{1 - (f_c/f)^2}$</td><td>波导特性阻抗</td></tr>
+    <tr><td>(7–8)</td><td>§2.4</td><td class="l">$\nabla\times\bar{\mathbf{E}} = i\omega\bar{\mathbf{B}},\ \nabla\times\bar{\mathbf{B}} = -i\omega c^{-2}\bar{\bar{\mathbf{K}}}\bar{\mathbf{E}}$</td><td>频域 Maxwell 方程组</td></tr>
+    <tr><td>(9)</td><td>§2.4</td><td class="l">$\bar{\bar{\mathbf{K}}}$ 矩阵（含 $R$、$L$、$P$）</td><td>冷等离子体介电张量</td></tr>
+    <tr><td>(10)</td><td>§2.4</td><td class="l">$P \approx 1 - f_{pe}^2 / f^2$</td><td>介电张量 $zz$ 分量</td></tr>
+    <tr><td>(11)</td><td>§2.4</td><td class="l">$\partial^2\mathbf{E_x}/\partial z^2 + R(z) k_0^2 \mathbf{E_x} = 0$</td><td>RHP 波方程</td></tr>
+    <tr><td>(14)</td><td>§2.4</td><td class="l">$Z_p = Z_0/\sqrt{R}$ ⭐</td><td>等离子体表面阻抗（纯电阻）</td></tr>
+    <tr><td>(16)</td><td>§2.4</td><td class="l">$B_W/B_{res} \approx 1 + (n_e/n_c)(\varepsilon_r^{-2})[1-(f_c/f)^2]$</td><td>最佳窗口磁场</td></tr>
+    <tr><td>(17–18)</td><td>§2.5</td><td class="l">$d\bar{r}/dt = v_g,\ d\bar{k}/dt = -\partial D/\partial\bar{r}/(\partial D/\partial\omega)$</td><td>射线方程（WKB）</td></tr>
+    <tr><td>(21)</td><td>§2.5</td><td class="l">$k_{\parallel i} \propto \exp\{-[(\omega-\omega_{ce})/(k_{\parallel}v_{te})]^2\}$</td><td>无碰撞吸收系数</td></tr>
+    <tr><td>(23)</td><td>§2.5</td><td class="l">$\omega - \omega_{ce} - k_{\parallel} v_{\parallel} \approx 0$ ⭐</td><td>多普勒展宽 ECR 共振</td></tr>
+    <tr><td>(24)</td><td>§2.5</td><td class="l">$v_{g\perp}/v_{g\parallel} \approx (k_\perp/k_\parallel)(\beta-2)/[\cdots]$</td><td>折射方向（向低密度弯）</td></tr>
+    <tr><td>(25)</td><td>§2.5</td><td class="l">$d n_e(r)/dt + n_e(r)/\tau_e = S(r)$</td><td>自洽连续性方程</td></tr>
+    <tr><td>(26–28)</td><td>§2.6</td><td class="l">$n_n\langle\sigma v_e\rangle_i = 1/\tau_e$ → $T_e$ 隐式决定</td><td>粒子平衡 → $T_e$</td></tr>
+    <tr><td>(30)</td><td>§2.6</td><td class="l">$V_p \approx V_f + (T_e/2)\ln(M_i/2.3 m_e)$</td><td>等离子体电位</td></tr>
+    <tr><td>(32)</td><td>§2.6</td><td class="l">$n_e = P_\mu L / \{V c_s e [V_p+2T_e+E_i+E_x\cdots]\}$</td><td>密度完整表达式</td></tr>
+  </table>
+</div>
+
+<!-- ═══════════════ 关键数值 ═══════════════ -->
+<div class="card">
+  <h2>附录：关键数值参数速查（典型 ECR 工况）</h2>
+  <table>
+    <tr><th>参数</th><th>符号</th><th>典型值</th><th>单位</th></tr>
+    <tr><td>微波频率</td><td>$f$</td><td>2.45</td><td>GHz</td></tr>
+    <tr><td>自由空间波长</td><td>$\lambda_0$</td><td>12.2</td><td>cm</td></tr>
+    <tr><td>ECR 共振磁场</td><td>$B_{\text{res}}$</td><td>875</td><td>G</td></tr>
+    <tr><td>临界密度</td><td>$n_c$</td><td>$7.5 \times 10^{10}$</td><td>cm⁻³</td></tr>
+    <tr><td>LHP 截止密度</td><td>$n_L$</td><td>$\approx 1.5 \times 10^{11}$</td><td>cm⁻³</td></tr>
+    <tr><td>等离子体波长（典型）</td><td>$\lambda$</td><td>1–2</td><td>cm</td></tr>
+    <tr><td>波折射率（典型）</td><td>$n = ck/\omega$</td><td>5–10</td><td>—</td></tr>
+    <tr><td>多普勒展宽吸收范围</td><td>$B_{\text{abs}}$</td><td>810–940</td><td>G</td></tr>
+    <tr><td>电子热速度</td><td>$v_{te}$</td><td>$\sim 1.5 \times 10^8$</td><td>cm/s</td></tr>
+    <tr><td>微波电场（1000 W，15 cm Dia.）</td><td>$E_\perp$</td><td>$\approx 1900$</td><td>V/m</td></tr>
+    <tr><td>单次 ECR 穿越能量增益</td><td>$\Delta W_\perp$</td><td>$40 \pm 35$</td><td>eV</td></tr>
+    <tr><td>尾部电子占比</td><td>$n_t / n_e$</td><td>$\approx 1\%$</td><td>—</td></tr>
+    <tr><td>电离效率增强（由尾部）</td><td>—</td><td>$\approx 16\%$</td><td>—</td></tr>
+    <tr><td>能量单价（Ar）</td><td>—</td><td>$\approx 60$</td><td>eV/对</td></tr>
+    <tr><td>波穿越时间</td><td>$L/v_g$</td><td>$\sim 10^{-8}$</td><td>s</td></tr>
+    <tr><td>粒子约束时间（Ar）</td><td>$\tau_e$</td><td>$\sim 1.4 \times 10^{-4}$</td><td>s</td></tr>
+    <tr><td>密度涨落时间尺度</td><td>$t_{\text{fluct}}$</td><td>$\sim 100$</td><td>μs</td></tr>
+    <tr><td>等离子体电位（Ar，$T_e = 6\ \mathrm{eV}$）</td><td>$V_p$</td><td>$\approx 31$</td><td>V</td></tr>
+    <tr><td>离子通量（典型）</td><td>$\Gamma_i$</td><td>$\sim 10$</td><td>mA/cm²</td></tr>
+  </table>
+</div>
+
+<footer>
+  Stevens, J. E. (1995). Electron Cyclotron Resonance Plasma Sources. In High Density Plasma Sources, Noyes Publications.
+</footer>
+
+</div>
+</body>
+</html>
